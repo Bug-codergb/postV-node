@@ -1,15 +1,16 @@
 const connection = require('../app/database');
 class BannerService {
   async getNewBannerService() {
-    const sql = `select moment.momentId,moment.title,moment.createTime,
-                        if(picture.picUrl is null,null,JSON_ARRAYAGG(picture.picUrl)) as pictures,
-                        (select count(view.momentId) from view where view.momentId=moment.momentId) as views
-                from moment 
-                LEFT JOIN picture on moment.momentId=picture.momentId
-                GROUP BY moment.momentId
-                having title is not null and pictures is not null
-                ORDER BY views desc
-                LIMIT 0,5`
+    const sql = `select m.momentId,m.title,m.updateTime,m.type,playCount,
+    (select vid from video where m.momentId=video.momentId) as vid,
+   (select JSON_ARRAYAGG(JSON_OBJECT('picUrl',url)) from vioimg where vioimg.vid in  
+                                             (select vid from video where m.momentId=video.momentId)) as picUrl,
+   (select JSON_OBJECT('userId',user.userId,'userName',user.userName) from user where user.userId=m.userId) as user
+   from moment as m
+   LEFT JOIN video on video.momentId=m.momentId
+   GROUP BY m.momentId
+   ORDER BY video.playCount desc,m.createTime desc
+   limit 0,8`
    const result=await connection.execute(sql);
    return result[0]
   }

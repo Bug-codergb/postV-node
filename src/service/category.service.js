@@ -20,12 +20,20 @@ class CategoryService{
     const result=await connection.execute(sql,[id,userId,title,content,cate]);
     return id;
   }
+  //根据categoryId获取name
+  async getNameByCateId(cateId)
+  {
+    const sql=`select name from video_cate where categoryId=?`;
+    const result=await connection.execute(sql,[cateId]);
+    return result[0] 
+  }
   //获取分类下视频
   async getCateDetailService(categoryId)
   {
     const sql=`
-    select c.categoryId,c.name,momentId,(select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl)
+    select vc.categoryId,vc.name,momentId,(select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl)
                                      from user where user.userId=moment.userId) as user,
+                                     (select vid from video where video.momentId=moment.momentId) as vid,
        updateTime,title,type,status,
 			 if(type=0,(select JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) from picture as p where p.momentId=moment.momentId),
 			            (select JSON_ARRAYAGG(JSON_OBJECT('picUrl',vioimg.url)) from video LEFT JOIN vioimg on video.vid=vioimg.vid 
@@ -36,9 +44,9 @@ class CategoryService{
 			 (select count(s.momentId) from subscribe as s where s.momentId=moment.momentId) as subs,
 			 (select count(c.momentId) from comment as c where c.momentId=moment.momentId and c.replyId is null) as comments,
 			 (select count(t.momentId) from thumbs as t where t.momentId=moment.momentId) as thumbs
-    from category as c 
-    LEFT JOIN moment on moment.categoryId=c.categoryId
-    where c.categoryId=?`;
+    from video_cate as vc 
+    LEFT JOIN moment on moment.categoryId=vc.categoryId
+    where vc.categoryId=? and momentId is not null`;
     const result=await connection.execute(sql,[categoryId]);
     return result[0]
   }

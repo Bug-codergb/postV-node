@@ -2,12 +2,7 @@ const connection = require('../app/database');
 class MomentService {
     async createService(userId, title, content, cate) {
         const id = new Date().getTime();
-        let type = 0;
-        const state = `select name from category where categoryId=?`;
-        const res = await connection.execute(state, [cate]);
-        if (res[0][0].name === '视频') {
-            type = 1
-        }
+        let type = 1;
         const sql = `insert into moment (momentId,userId,title,content,categoryId,type) values(?,?,?,?,?,?)`;
         const result = await connection.execute(sql, [id, userId, title, content, cate, type]);
         return id
@@ -23,7 +18,7 @@ class MomentService {
         (select JSON_ARRAYAGG(originalName) from picture where moment.momentId=picture.momentId) as originalNames,
                    JSON_OBJECT('id',user.userId,'name',user.userName,'avatarUrl',user.avatarUrl) as user,
                    JSON_ARRAYAGG(
-                            JSON_OBJECT(
+                            JSON_OBJECT(  
                                  'id',comment.commentId,'content',comment.content,
                                  'comment_user',(select JSON_OBJECT('id',user.userId,'name',user.userName,'avatarUrl',user.avatarUrl) as user 
                                  from user where user.userId=comment.userId),
@@ -54,15 +49,15 @@ class MomentService {
     //获取多条动态
     async getAllMomentService(offset, limit) {
         const sql = `select moment.momentId,title,moment.content,moment.updateTime,type,
-                          JSON_OBJECT('id',user.userId,'name',user.userName,'avatarUrl',user.avatarUrl) as user,count(comment.commentId) as comments,
-                          (select vid from video where video.momentId=moment.momentId) as vid
-                   from moment
-                   LEFT JOIN user on moment.userId=user.userId
-                   LEFT JOIN comment on comment.momentId=moment.momentId
-                   GROUP BY momentId
-                   HAVING LENGTH(trim(moment.content))>0
-                   ORDER BY moment.createTime desc
-                   LIMIT ?,?`;
+        JSON_OBJECT('userId',user.userId,'userName',user.userName,'avatarUrl',user.avatarUrl) as user,
+              count(comment.commentId) as comments,
+        (select vid from video where video.momentId=moment.momentId) as vid
+        from moment
+       LEFT JOIN user on moment.userId=user.userId
+       LEFT JOIN comment on comment.momentId=moment.momentId
+       GROUP BY momentId
+       ORDER BY moment.createTime desc
+       LIMIT ?,?`;
         const result = await connection.execute(sql, [offset, limit]);
         return result[0];
     }
