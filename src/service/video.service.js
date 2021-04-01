@@ -4,12 +4,12 @@ const {
   APP_HOST
 }=require('../app/config')
 class VideoService{
-  async createService(momentId,userId,mimetype,filename,size)
+  async createService(momentId,userId,mimetype,filename,size,duration)
   {
     const id=new Date().getTime();
     const url=`${APP_HOST}:${APP_PORT}/video?vid=${id}`;
-    const sql=`insert into video (vid,url,momentId,userId,mimetype,fileName,size) values(?,?,?,?,?,?,?)`;
-    const result=await connection.execute(sql,[id,url,momentId,userId,mimetype,filename,size]);
+    const sql=`insert into video (vid,url,momentId,userId,mimetype,fileName,size,duration) values(?,?,?,?,?,?,?,?)`;
+    const result=await connection.execute(sql,[id,url,momentId,userId,mimetype,filename,size,duration]);
     return id
   }
   async uploadVioImgService(vid,mimetype,filename,size)

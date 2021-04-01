@@ -21,12 +21,18 @@ class CategoryController{
     const result=await getAllCateService(offset,limit);
     ctx.body=result;
   }
-  //获取分类下图片
+  //获取分类内容
   async getCateDetail(ctx,next)
   {
-    const {categoryId}=ctx.query;
-    const result=await getCateDetailService(categoryId);
-    ctx.body=result;
+    try{
+      const {categoryId}=ctx.query;
+      const {offset=0,limit=15}=ctx.query;
+      const result=await getCateDetailService(categoryId,offset,limit);
+      ctx.body=result;
+    }catch(e)  
+    {
+      console.log(e);
+    } 
   }
 }
 module.exports=new CategoryController();

@@ -19,10 +19,12 @@ class VideoController{
      const {momentId}=ctx.query;
      const {userId}=ctx.user;
      let vids=[];
+     const {duration}=ctx.req.body;
+     console.log(duration);
      for(let file of ctx.req.files)
      {
        const {mimetype,filename,size}=file;
-       const result=await createService(momentId,userId,mimetype,filename,size);
+       const result=await createService(momentId,userId,mimetype,filename,size,duration);
        vids.push(result);
      }
      ctx.body=vids;
@@ -53,12 +55,16 @@ class VideoController{
   //获取视频播放
   async getVideo(ctx,next)
   {
+   try{
     const {vid}=ctx.query;
     const result=await getVideoByIdService(vid);
-    const {mimetype,fileName}=result[0];
-    ctx.set('content-type',mimetype);
-    ctx.set("Accept-Ranges", "bytes");
+    const {mimetype,fileName,duration}=result[0];
+    ctx.set('content-type',mimetype); 
     ctx.body=fs.createReadStream(`./upload/video/${fileName}`);
+   }catch(e)
+   {
+     console.log(e)
+   }  
   }
   //获取所有视频
   async getAllVideo(ctx,next)

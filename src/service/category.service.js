@@ -20,27 +20,34 @@ class CategoryService{
     const result=await connection.execute(sql,[id,userId,title,content,cate]);
     return id;
   }
-  //获取分类下视频
-  async getCateDetailService(categoryId)
+  //获取分类下内容
+  async getCateDetailService(categoryId,offset,limit)
   {
-    const sql=`
-    select c.categoryId,c.name,momentId,(select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl)
-                                     from user where user.userId=moment.userId) as user,
-       updateTime,title,type,status,
-			 if(type=0,(select JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) from picture as p where p.momentId=moment.momentId),
-			            (select JSON_ARRAYAGG(JSON_OBJECT('picUrl',vioimg.url)) from video LEFT JOIN vioimg on video.vid=vioimg.vid 
-									 where video.momentId=moment.momentId )
-				 )
-			  as picUrl,
-			 (select count(view.momentId) from view where view.momentId=moment.momentId) as views,
-			 (select count(s.momentId) from subscribe as s where s.momentId=moment.momentId) as subs,
-			 (select count(c.momentId) from comment as c where c.momentId=moment.momentId and c.replyId is null) as comments,
-			 (select count(t.momentId) from thumbs as t where t.momentId=moment.momentId) as thumbs
-    from category as c 
-    LEFT JOIN moment on moment.categoryId=c.categoryId
-    where c.categoryId=?`;
-    const result=await connection.execute(sql,[categoryId]);
-    return result[0]
+    try{
+      const sql=`
+      select c.categoryId,c.name,momentId,(select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl)
+                                       from user where user.userId=moment.userId) as user,
+         updateTime,title,type,status,
+         if(type=0,(select JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) from picture as p where p.momentId=moment.momentId),
+                    (select JSON_ARRAYAGG(JSON_OBJECT('picUrl',vioimg.url)) from video LEFT JOIN vioimg on video.vid=vioimg.vid 
+                     where video.momentId=moment.momentId )
+           )
+          as picUrl,
+         (select count(view.momentId) from view where view.momentId=moment.momentId) as views,
+         (select count(s.momentId) from subscribe as s where s.momentId=moment.momentId) as subs,
+         (select count(c.momentId) from comment as c where c.momentId=moment.momentId and c.replyId is null) as comments,
+         (select count(t.momentId) from thumbs as t where t.momentId=moment.momentId) as thumbs
+      from category as c 
+      LEFT JOIN moment on moment.categoryId=c.categoryId
+      where c.categoryId=?
+      limit ?,?`;
+      // const result=await connection.execute(sql,[categoryId,offset,limit]);
+      const result=await connection.execute(sql,[categoryId,offset,limit]);
+      return result[0]
+    }catch(e)
+    {
+      console.log(e)
+    }
   }
 }
 module.exports=new CategoryService()
