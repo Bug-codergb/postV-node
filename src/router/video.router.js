@@ -12,11 +12,11 @@ const {
   getVideoAllCate,
   addCateForVio,
   getCateVideo
-}=require('../controller/video.controller');    
+}=require('../controller/video.controller');
 const {
   videoHandle,
-  videoImgHandle  
-}=require('../middleware/file.middleware');  
+  videoImgHandle
+}=require('../middleware/file.middleware');
 const {
   authVerify
 }=require('../middleware/auth.middleware')

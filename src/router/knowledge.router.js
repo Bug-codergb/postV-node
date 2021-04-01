@@ -29,4 +29,4 @@ knowledgeRouter.get('/all',getAllKnow);
 knowledgeRouter.get('/detail',getKnowDetail)
 //获取课程播放地址
 knowledgeRouter.get('/url',getKnowUrl)
-module.exports=knowledgeRouter
+module.exports=knowledgeRouter  

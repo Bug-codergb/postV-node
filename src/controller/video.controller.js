@@ -18,17 +18,16 @@ class VideoController{
     // console.log(ctx.req.files)
      const {momentId}=ctx.query;
      const {userId}=ctx.user;
-     const {duration}=ctx.req.body;
      let vids=[];
-     for(let index in ctx.req.files)
+     for(let file of ctx.req.files)
      {
-      const {mimetype,filename,size}=ctx.req.files[index];
-      const result=await createService(momentId,userId,mimetype,filename,size,duration[index]);
-      vids.push(result);
+       const {mimetype,filename,size}=file;
+       const result=await createService(momentId,userId,mimetype,filename,size);
+       vids.push(result);
      }
      ctx.body=vids;
   }  
-  async uploadVioImg(ctx,next)  
+  async uploadVioImg(ctx,next)
   {  
      //console.log(ctx.req.files);
      const vids=JSON.parse(ctx.query.vids);
