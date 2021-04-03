@@ -7,7 +7,9 @@ const {
   addContentImgService,
   getTopicImgService,
   getTopicContentService,
-  delTopicContentService
+  delTopicContentService,
+  setTopicImgService,
+  getTopicCoverService
 }=require('../service/topic.service')
 class TopicController{
   async create(ctx,next)
@@ -21,6 +23,25 @@ class TopicController{
     const {offset,limit}=ctx.query;
     const result=await getAllTopicService(offset,limit);
     ctx.body=result;
+  }
+  //为话题配图
+  async setTopicImg(ctx,next)
+  {
+    const {userId}=ctx.query;
+    const {topicId}=ctx.query;
+    const {file}=ctx.req;
+    const {mimetype,filename,size}=file;
+    const result=await setTopicImgService(userId,topicId,mimetype,filename,size);
+    ctx.body=result;
+  }
+  //获取话题封面
+  async getTopicCover(ctx,next)
+  {
+    const {id}=ctx.query;
+    const result=await getTopicCoverService(id);
+    const {fileName,mimetype}=result[0];
+    ctx.set('content-type',mimetype);
+    ctx.body=fs.createReadStream(`./upload/topicImg/${fileName}`)
   }
   //删除话题
   async delTopic(ctx,next)
@@ -60,7 +81,7 @@ class TopicController{
      // console.log(result[0]);
     const {fileName,mimetype}=result[0];
     ctx.set('content-type',mimetype);
-    ctx.body=fs.createReadStream(`./upload/topicImg/${fileName}`)
+    ctx.body=fs.createReadStream(`./upload/topicContentImg/${fileName}`)
   }
   //获取话题内容
   async getTopicContent(ctx,next)

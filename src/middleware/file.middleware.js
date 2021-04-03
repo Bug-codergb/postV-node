@@ -12,10 +12,14 @@ const videoUpload=Multer({
 const videoImgUpload=Multer({
     dest:"./upload/videoImg/"
 })
+//话题内容图片
 const topicImgUpload=Multer({
-    dest:'./upload/topicImg/'
+    dest:'./upload/topicContentImg/'
 })
-
+//话题封面
+const topicCoverUpload=Multer({
+    dest:'./upload/topicImg'
+})
 const movieUpload=Multer({
     dest:'./upload/movie/'
 })
@@ -29,6 +33,7 @@ const knowImgUpload=Multer({
 const knowContentUpload=Multer({
     dest:'./upload/knowContent/'
 })
+
 const avatarHandle=avatarUpload.single('avatar');
 const pictureHandle=pictureUpload.array('picture');
 const videoHandle=videoUpload.array('video');
@@ -45,6 +50,9 @@ const movieImgHandle=movieImgUpload.array('movieImg');
 const knowHandle=knowImgUpload.single('knowImg');
 //课程内容
 const knowContentHandle=knowContentUpload.array('knowContent');
+
+//话题封面
+const topicCoverHandle=topicCoverUpload.single('topicCover');
 module.exports={
     avatarHandle,
     pictureHandle,
@@ -54,5 +62,6 @@ module.exports={
     movieHandle,
     movieImgHandle,
     knowHandle,
-    knowContentHandle
+    knowContentHandle,
+    topicCoverHandle
 }
