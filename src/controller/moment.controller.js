@@ -52,6 +52,7 @@ class MomentController {
             console.log(e)
         }
     }
+    //获取最新动态
     async getAllMoment(ctx, next) {
         const { offset, limit } = ctx.query;
         const result = await getAllMomentService(offset, limit);

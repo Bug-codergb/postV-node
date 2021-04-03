@@ -15,7 +15,9 @@ const {
 //发布动态
 momentRouter.post('/add',authVerify,create);
 momentRouter.get('/',getMomentById);
+//获取最新动态
 momentRouter.get('/all',getAllMoment);
+
 momentRouter.post('/delete',authVerify,updateVerify,delMoment);
 //获取推荐动态
 momentRouter.get('/recommend',getRecMoment)

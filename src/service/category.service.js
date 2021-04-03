@@ -39,12 +39,12 @@ class CategoryService{
          (select count(t.momentId) from thumbs as t where t.momentId=moment.momentId) as thumbs
       from category as c 
       LEFT JOIN moment on moment.categoryId=c.categoryId
-      where c.categoryId=?
+      where c.categoryId=? and moment.status=1
       limit ?,?`;
       // const result=await connection.execute(sql,[categoryId,offset,limit]);
       const result=await connection.execute(sql,[categoryId,offset,limit]);
       return result[0]
-    }catch(e)
+    }catch(e)  
     {
       console.log(e)
     }

@@ -6,6 +6,7 @@ class BannerService {
                         (select count(view.momentId) from view where view.momentId=moment.momentId) as views
                 from moment 
                 LEFT JOIN picture on moment.momentId=picture.momentId
+                where moment.status=1
                 GROUP BY moment.momentId
                 having title is not null and pictures is not null
                 ORDER BY views desc
@@ -25,6 +26,7 @@ class BannerService {
 			(select JSON_OBJECT('userId',user.userId,'userName',user.userName) from user where user.userId=m.userId) as user
     from moment as m
     LEFT JOIN view on view.momentId=m.momentId
+    where m.status=1
     GROUP BY m.momentId
     having picUrl is not null
     ORDER BY views desc

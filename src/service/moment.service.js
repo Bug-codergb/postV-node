@@ -53,14 +53,14 @@ class MomentService {
     }
     //获取多条动态
     async getAllMomentService(offset, limit) {
-        const sql = `select moment.momentId,title,moment.content,moment.updateTime,type,
+        const sql = `select moment.momentId,title,moment.content,moment.updateTime,type,moment.status,
                           JSON_OBJECT('id',user.userId,'name',user.userName,'avatarUrl',user.avatarUrl) as user,count(comment.commentId) as comments,
                           (select vid from video where video.momentId=moment.momentId) as vid
                    from moment
                    LEFT JOIN user on moment.userId=user.userId
                    LEFT JOIN comment on comment.momentId=moment.momentId
                    GROUP BY momentId
-                   HAVING LENGTH(trim(moment.content))>0
+                   HAVING moment.status=1
                    ORDER BY moment.createTime desc
                    LIMIT ?,?`;
         const result = await connection.execute(sql, [offset, limit]);
@@ -71,7 +71,7 @@ class MomentService {
         const sql = `delete from moment where momentId=?`;
         const result = await connection.execute(sql, [momentId]);
         return result[0];
-    }
+    }  
     async getUserByIdService(id, source, userId) {
         /* console.log(source.tableName,source.field)*/
         try {
@@ -114,7 +114,7 @@ class MomentService {
 				(select count(t.momentId) from thumbs as t where t.momentId=moment.momentId) as thumbs
         from category as c
         LEFT JOIN moment on moment.categoryId=c.categoryId
-        where c.categoryId=?
+        where c.categoryId=? and moment.status=1
         GROUP BY momentId
         HAVING picUrl is not null
         ORDER BY views desc

@@ -6,6 +6,13 @@ class UserService {
         const result = await connection.execute(sql, [userId, userName, password]);
         return result[0]
     }
+    //根据userId获取用户简略信息
+    async getUserMsgByIdService(userId)
+    {
+        const sql = `select * from user where userId=?`;
+        const result = await connection.execute(sql, [userId]);
+        return result[0]
+    }
     async getUserNameService(userName) {
         const sql = `select * from user where userName=?`;
         const result = await connection.execute(sql, [userName]);
