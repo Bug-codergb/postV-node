@@ -72,14 +72,24 @@ class TopicService{
   async getTopicContentService(topicId,offset,limit)
   {
     const sql=`
-    select topic_content.id as topic_content_id,topicId,title,content,topic_content.updateTime,JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) as picUrls,
-        JSON_ARRAYAGG(JSON_OBJECT('originalName',originalName)) as originalNames
-    from topic_content
-    LEFT JOIN topic_content_img on topic_content.id=topic_content_img.topic_content_id
-    where topicId=?
-    GROUP BY topic_content.id
-    limit ?,?`;
-    const result=await connection.execute(sql,[topicId,offset,limit]);
+    select topic.topicId,name,topic.updateTime,views,follow,description,
+       (select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl) from user where user.userId=leader) as user,
+			 picUrl,
+       (select count(userId) from topic_user as tu where tu.topicId=topic.topicId) as users,
+			 (select JSON_ARRAYAGG(JSON_OBJECT('topic_content_id',tc.id,'title',title,'content',content,'picUrl',
+			         (select JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) 
+							  from topic_content_img as tci where tci.topic_content_id=tc.id ),
+								'originalNames',(select JSON_ARRAYAGG(JSON_OBJECT('originalName',originalName)) 
+							  from topic_content_img as tci where tci.topic_content_id=tc.id ),
+                'user',(select JSON_OBJECT('userId',tc.userId,'userName',userName,'avatarUrl',avatarUrl) 
+								        FROM user where user.userId=tc.userId))) 
+			  from topic_content as tc
+        where tc.topicId=topic.topicId
+        GROUP BY topicId
+        limit ?,?) as content
+    from topic left join topic_img as tc on tc.topicId=topic.topicId 
+    where topic.topicId=?`;
+    const result=await connection.execute(sql,[offset,limit,topicId]);
     return result[0];
   }
   //删除专题下内容

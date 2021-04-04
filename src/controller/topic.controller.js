@@ -86,11 +86,13 @@ class TopicController{
   //获取话题内容
   async getTopicContent(ctx,next)
   {
-    const {offset,limit,topicId}=ctx.query;
-    //console.log(topicId);
+    try{
+      const {offset,limit,topicId}=ctx.query;
     const result=await getTopicContentService(topicId,offset,limit);
-   // console.log(result);
-    for(let item of result)
+    console.log(result[0])
+    if(result[0].content)
+    {
+      for(let item of result[0].content)
     {
       if(item.originalNames)
       {
@@ -98,11 +100,16 @@ class TopicController{
         {
           item.content=item.content.replace(/&bsp;/g,'').replace(/\(/g,'').replace(/\)/g,'')
           let reg=new RegExp(`\\[${item.originalNames[i].originalName}\\]`,'g');
-          item.content=item.content.replace(reg,`<img src=${item.picUrls[i].picUrl} />`)
+          item.content=item.content.replace(reg,`<img src=${item.picUrl[i].picUrl} />`)
         }
       }  
     }
-    ctx.body=result;
+    }
+    ctx.body=result[0];    
+    }catch(e)
+    {
+      console.log(e)
+    }
   } 
   //删除话题下内容
   async delTopicContent(ctx,next)
