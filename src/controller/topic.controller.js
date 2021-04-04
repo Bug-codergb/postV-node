@@ -9,7 +9,13 @@ const {
   getTopicContentService,
   delTopicContentService,
   setTopicImgService,
-  getTopicCoverService
+  getTopicCoverService,
+  setTopicCommentService,
+  getContentIdByComentId,
+  replyComentService,
+  subTopicContentService,
+  isSubService,
+  getTopicContentDetailService
 }=require('../service/topic.service')
 class TopicController{
   async create(ctx,next)
@@ -116,6 +122,48 @@ class TopicController{
   {
     const {id}=ctx.query;
     const result=await delTopicContentService(id);
+    ctx.body=result;
+  }
+  //评论专题下内容
+  async setTopicComment(ctx,next)
+  {
+    const {topic_content_id}=ctx.query;
+    const {content}=ctx.request.body;
+    const {userId}=ctx.user;
+    const result=await setTopicCommentService(topic_content_id,content,userId);
+    ctx.body=result;
+  }
+  //回复评论
+  async replyComent(ctx,next)
+  {
+    const {commentId}=ctx.query;
+    const {content}=ctx.request.body;
+    const {userId}=ctx.user;
+    const res=await getContentIdByComentId(commentId);
+    const {topic_content_id}=res[0];
+    const result=await replyComentService(commentId,content,userId,topic_content_id);
+    ctx.body=result;
+  }
+  //收藏专题内容
+  async subTopicContent(ctx,next)
+  {
+    const {userId}=ctx.user;
+    const {topic_content_id}=ctx.query;
+    const res=await isSubService(userId,topic_content_id);
+    if(res.length===0)
+    {
+      const result=await subTopicContentService(userId,topic_content_id);
+      ctx.body=result;
+    }
+    else{
+      ctx.body="你已经收藏"
+    }
+  }
+  //获取专题内容详情
+  async getTopicContentDetail(ctx,next)
+  {
+    const {topic_content_id}=ctx.query;
+    const result =await getTopicContentDetailService(topic_content_id);
     ctx.body=result;
   }
 }

@@ -12,7 +12,11 @@ const {
   getTopicContent,
   delTopicContent,
   setTopicImg,
-  getTopicCover
+  getTopicCover,
+  setTopicComment,
+  replyComent,
+  subTopicContent,
+  getTopicContentDetail
 }=require('../controller/topic.controller')
 //添加话题
 topicRouter.post('/',authVerify,create);
@@ -33,6 +37,14 @@ topicRouter.post('/content/img',authVerify,topicImgHandle,addContentImg) ;
 topicRouter.get('/content/img',getTopicImg);  
 //获取话题内容
 topicRouter.get('/content',getTopicContent);
+//收藏话题内容
+topicRouter.post('/content/sub',authVerify,subTopicContent)
 //删除话题下内容
 topicRouter.post('/content/delete',authVerify,delTopicContent)
+//评论话题下内容
+topicRouter.post('/comment',authVerify,setTopicComment);
+//回复评论
+topicRouter.post('/comment/reply',authVerify,replyComent);
+//获取专题内容详情
+topicRouter.get('/content/detail',getTopicContentDetail)
 module.exports=topicRouter;
