@@ -144,6 +144,8 @@ class TopicService{
     select tc.id as topic_content_id,topicId,content,updateTime,title,
        (select (JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl)) from user where user.userId=tc.userId) as user,
 			 (select (JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl))) from topic_content_img as tci where tci.topic_content_id=tc.id) as picUrl,
+       (select (JSON_ARRAYAGG(JSON_OBJECT('originalName',originalName))) 
+			         from topic_content_img as tci where tci.topic_content_id=tc.id) as originalNames,
 			 (select count(subscribe.topic_content_id) from subscribe 
 			                                           where subscribe.topic_content_id=tc.id 
 																								) as sub,
@@ -172,6 +174,6 @@ class TopicService{
     HAVING tc.id=?`;
     const result=await connection.execute(sql,[topic_content_id]);
     return result[0];
-  }
+  }    
 }
 module.exports=new TopicService();
