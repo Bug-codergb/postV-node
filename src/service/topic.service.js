@@ -164,7 +164,7 @@ class TopicService{
     const sql=`select tc.id as topic_content_id,topicId,tc.content,
     JSON_ARRAYAGG(JSON_OBJECT('commentId',commentId,'content',comment.content,'updateTime',comment.updateTime,
     'user',(select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl) from user where user.userId=comment.userId),
-    'reply', (select JSON_ARRAYAGG(JSON_OBJECT('replyId',c.commentId,'content',c.content,
+    'reply', (select JSON_ARRAYAGG(JSON_OBJECT('commentId',c.commentId,'content',c.content,
      'user',(select JSON_OBJECT('userId',c.userId,'userName',userName,'avatarUrl',avatarUrl) FROM user where user.userId=c.userId ) )) 
      from comment as c where c.replyId=comment.commentId)   )) as comment
     from topic_content as tc

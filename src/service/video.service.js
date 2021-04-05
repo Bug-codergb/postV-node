@@ -42,7 +42,9 @@ class VideoService{
        (select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl)
         from user where v.userId=user.userId) as user,
        (select title from moment where moment.momentId=v.momentId) as title,
-       (select JSON_OBJECT('categoryId',categoryId,'name',name) from video_cate where v.categoryId=video_cate.categoryId ) as category
+       (select JSON_OBJECT('categoryId',categoryId,'name',name) from video_cate where v.categoryId=video_cate.categoryId ) as category,
+       (select name from video LEFT JOIN moment on video.momentId=moment.momentId 
+        LEFT JOIN category as c on c.categoryId=moment.categoryId where video.vid=v.vid) as name
     from video as v
     left JOIN vioimg as i on v.vid=i.vid
     LIMIT ?,?`
@@ -50,7 +52,7 @@ class VideoService{
    return result[0];
   }
   //获取视频详情
-  async getVideoDetailService(vid)
+  async getVideoDetailService(vid)  
   {
     const sql=`
        select v.vid,v.url,v.updateTime,vi.url as coverUrl,v.playCount,

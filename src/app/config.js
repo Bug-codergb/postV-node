@@ -14,4 +14,4 @@ module.exports={
     MYSQL_DATABASE
 }=process.env;
 module.exports.PRIVATE_KEY=PRIVATE_KEY;
-module.exports.PUBLIC_KEY=PUBLIC_KEY;  
+module.exports.PUBLIC_KEY=PUBLIC_KEY;    

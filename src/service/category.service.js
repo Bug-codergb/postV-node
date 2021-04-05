@@ -9,7 +9,7 @@ class CategoryService{
   }
   async getAllCateService(offset,limit)
   {
-    const sql=`select * from category where name!="放映厅" limit ?,?`;
+    const sql=`select * from category limit ?,?`;
     const result=await connection.execute(sql,[offset,limit]);
     return result[0]
   }
