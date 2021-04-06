@@ -49,6 +49,7 @@ class ToplistService{
     LEFT JOIN category as c on c.categoryId=m.categoryId		
     where c.name="视频" and status=1
     GROUP BY video.playCount
+    ORDER BY video.playCount desc
     limit ?,?`;
     const result=await connection.execute(sql,[offset,limit]);
     return result[0]
