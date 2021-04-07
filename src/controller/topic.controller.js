@@ -15,7 +15,8 @@ const {
   replyComentService,
   subTopicContentService,
   isSubService,
-  getTopicContentDetailService
+  getTopicContentDetailService,
+  joinTopicService
 } = require('../service/topic.service')
 class TopicController {
   async create(ctx, next) {
@@ -160,6 +161,14 @@ class TopicController {
     } catch (e) {
       console.log(e)
     }
+  }
+  //加入专题
+  async joinTopic(ctx,next)
+  {
+    const {userId}=ctx.user;
+    const {topicId}=ctx.query;
+    const result=await joinTopicService(userId,topicId);
+    ctx.body=result;
   }
 }
 module.exports = new TopicController()

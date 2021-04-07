@@ -16,7 +16,8 @@ const {
   setTopicComment,
   replyComent,
   subTopicContent,
-  getTopicContentDetail
+  getTopicContentDetail,
+  joinTopic
 }=require('../controller/topic.controller')
 //添加话题
 topicRouter.post('/',authVerify,create);
@@ -47,4 +48,7 @@ topicRouter.post('/comment',authVerify,setTopicComment);
 topicRouter.post('/comment/reply',authVerify,replyComent);
 //获取专题内容详情
 topicRouter.get('/content/detail',getTopicContentDetail)
+
+//加入专题
+topicRouter.post('/join',authVerify,joinTopic)
 module.exports=topicRouter;

@@ -175,5 +175,12 @@ class TopicService{
     const result=await connection.execute(sql,[topic_content_id]);
     return result[0];
   }    
+  //加入专题
+  async joinTopicService(userId,topicId)
+  {
+    const sql=`insert into topic_user (topicId,userId) values(?,?)`;
+    const result=await connection.execute(sql,[topicId,userId]);
+    return result[0];
+  }
 }
 module.exports=new TopicService();

@@ -4,7 +4,9 @@ const {
     followService,
     followCancelService,
     getUserMsgService,
-    getRecUserService
+    getRecUserService,
+    getUserSubService,
+    getUserJoinTopicService
 }=require('../service/user.service')
 class UserController{
     async create(ctx,next){
@@ -48,5 +50,19 @@ class UserController{
         const result=await getRecUserService();
         ctx.body=result
     }
+    //获取用户收藏
+    async getUserSub(ctx,next)
+    {
+        const {userId}=ctx.query;
+        const result=await getUserSubService(userId);
+        ctx.body=result[0];
+    }
+    //用户加入的专题
+    async getUserJoinTopic(ctx,next)
+    {
+        const {userId}=ctx.query;
+        const result=await getUserJoinTopicService(userId);
+        ctx.body=result[0];
+    }
 }
-module.exports=new UserController()
+module.exports=new UserController()  
