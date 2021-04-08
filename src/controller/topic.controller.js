@@ -20,8 +20,9 @@ const {
 } = require('../service/topic.service')
 class TopicController {
   async create(ctx, next) {
-    const { name } = ctx.request.body;
-    const result = await createService(name);
+    const { name,desc} = ctx.request.body;
+    const {userId}=ctx.user;
+    const result = await createService(name,desc,userId);
     ctx.body = result;
   }
   async getAllTopic(ctx, next) {
@@ -31,15 +32,15 @@ class TopicController {
   }
   //为话题配图
   async setTopicImg(ctx, next) {
-    const { userId } = ctx.query;
-    const { topicId } = ctx.query;
+    const { userId } = ctx.user;
+    const { topicId } = ctx.query;  
     const { file } = ctx.req;
     const { mimetype, filename, size } = file;
     const result = await setTopicImgService(userId, topicId, mimetype, filename, size);
     ctx.body = result;
   }
   //获取话题封面
-  async getTopicCover(ctx, next) {
+  async getTopicCover(ctx, next) {  
     const { id } = ctx.query;
     const result = await getTopicCoverService(id);
     const { fileName, mimetype } = result[0];
@@ -54,7 +55,7 @@ class TopicController {
   }
   //为话题添加内容
   async addContent(ctx, next) {
-    let { title, content } = ctx.request.body;
+    let { title, content } = ctx.request.body;  
     const { topicId } = ctx.query;
     const reg0 = /\n/g;
     const reg1 = /\s/g;

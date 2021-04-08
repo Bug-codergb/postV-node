@@ -4,12 +4,12 @@ const {
   APP_HOST
 }=require('../app/config')
 class TopicService{
-  async createService(name)
+  async createService(name,desc,userId)
   {
     const id=new Date().getTime();
-    const sql=`insert into topic (topicId,name) values(?,?)`;
-    const result=await connection.execute(sql,[id,name]);
-    return result[0]
+    const sql=`insert into topic (topicId,name,description,leader) values(?,?,?,?)`;
+    const result=await connection.execute(sql,[id,name,desc,userId]);
+    return id
   }
   async getAllTopicService(offset,limit)
   {
