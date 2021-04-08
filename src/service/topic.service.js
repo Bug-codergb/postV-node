@@ -17,6 +17,7 @@ class TopicService{
     (select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl) from user where user.userId=leader) as user,
               (select count(userId) from topic_user as tu where tu.topicId=topic.topicId) as users
               from topic left join topic_img as tc on tc.topicId=topic.topicId 
+              ORDER BY users desc
               limit ?,?`;
     const result=await connection.execute(sql,[offset,limit]);
     return result[0];
@@ -43,11 +44,11 @@ class TopicService{
     const result = await connection.execute(sql,[topicId]);
     return result;
   }
-  async addContentService(topicId,title,content)
+  async addContentService(topicId,title,content,userId)
   {
     const id=new Date().getTime();
-    const sql=`insert into topic_content (id,topicId,content,title) values(?,?,?,?)`;
-    const result =await connection.execute(sql,[id,topicId,content,title]);
+    const sql=`insert into topic_content (id,topicId,content,title,userId) values(?,?,?,?,?)`;
+    const result =await connection.execute(sql,[id,topicId,content,title,userId]);
     return {
       status:200,
       topic_content_id:id

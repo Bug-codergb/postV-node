@@ -57,10 +57,11 @@ class TopicController {
   async addContent(ctx, next) {
     let { title, content } = ctx.request.body;  
     const { topicId } = ctx.query;
+    const {userId}=ctx.user
     const reg0 = /\n/g;
     const reg1 = /\s/g;
     content = content.replace(reg0, '<br/>').replace(reg1, '&nbsp;');
-    const result = await addContentService(topicId, title, content);
+    const result = await addContentService(topicId, title, content,userId);
     ctx.body = result;
   }
   async addContentImg(ctx, next) {
@@ -87,7 +88,7 @@ class TopicController {
     try {
       const { offset, limit, topicId } = ctx.query;
       const result = await getTopicContentService(topicId, offset, limit);
-      console.log(result[0])
+     // console.log(result[0])
       if (result[0].content) {
         for (let item of result[0].content) {
           if (item.originalNames) {
