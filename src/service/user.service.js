@@ -53,7 +53,7 @@ class UserService {
         const desc='`desc`'
        try{
         const sql=`
-        select user.userId,user.userName,user.createTime,avatarUrl,${desc}, count(moment.momentId) as moments,
+        select user.userId,user.userName,vip,user.createTime,avatarUrl,${desc}, count(moment.momentId) as moments,
         (select JSON_ARRAYAGG(JSON_OBJECT('fanId',fanId,'fanName',fanName,'avatarUrl',
                                                (select avatarUrl from user where user.userId=fans.fanId)
                                          )

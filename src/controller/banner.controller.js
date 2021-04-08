@@ -15,4 +15,4 @@ class BannerController{
     ctx.body=result;
   }
 }
-module.exports=new BannerController();
+module.exports=new BannerController();  

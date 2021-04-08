@@ -47,7 +47,7 @@ class KnowledgeService{
   async getAllKnowService(offset,limit)
   {
     const sql=`
-    select kid,title,description,JSON_OBJECT('userId',knowledge.userId,'userName',userName,'avatarUrl',avatarUrl) as user,playCount,vip,knowledge.updateTime,
+    select kid,title,description,JSON_OBJECT('userId',knowledge.userId,'userName',userName,'avatarUrl',avatarUrl) as user,playCount,knowledge.vip,knowledge.updateTime,
     (select picUrl from knowledge_img as ki where ki.kid=knowledge.kid ) as picUrl
     from knowledge
     LEFT JOIN user on user.userId=knowledge.userId

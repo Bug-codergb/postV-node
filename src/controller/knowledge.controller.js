@@ -61,6 +61,7 @@ class KnowledgeController{
   async getAllKnow(ctx,next)
   {
     const {offset,limit}=ctx.query;
+    console.log(offset,limit)
     const result=await getAllKnowService(offset,limit);
     ctx.body=result;
   }
