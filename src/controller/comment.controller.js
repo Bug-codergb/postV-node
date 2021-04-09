@@ -25,7 +25,7 @@ class CommentController{
         const {commentId}=ctx.query;
         if(!commentId||!content)
         {
-            paramError(ctx);
+            paramError(ctx);    
             return ;
         }
         const result=await replyService(commentId,content,userId);
