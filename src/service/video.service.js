@@ -117,5 +117,20 @@ class VideoService{
     const result=await connection.execute(sql,[categoryId]);
     return result[0]
   }
+  //获取推荐视频
+  async getCommVideoService()
+  {
+    const sql=`select video.vid,updateTime,momentId,playCount,categoryId,vi.url as coverUrl,duration,
+    (select JSON_OBJECT('userId',video.userId,'userName',userName,'avatarUrl',avatarUrl) 
+    from user where user.userId=video.userId) as user ,
+    (select title from moment where moment.momentId=video.momentId) as title
+    from video
+    LEFT JOIN vioimg as vi on vi.vid=video.vid
+    where categoryId is not null
+    ORDER BY playCount desc
+    limit 0,15`;
+    const result=await connection.execute(sql);
+    return result[0]
+  }
 }
 module.exports=new VideoService()

@@ -8,14 +8,15 @@ const {
     getUserMsg,
     getRecUser,
     getUserSub,
-    getUserJoinTopic
+    getUserJoinTopic,
+    setUserDesc
 }=require('../controller/user.controller');
 const {login}=require('../controller/login.controller')
 const {
     registerVerify,
     loginVerify,
 }=require('../middleware/verify.middleware')
-const {authVerify}=require('../middleware/auth.middleware')
+const {authVerify}=require('../middleware/auth.middleware');
 userRouter.post('/register',registerVerify,create);
 userRouter.post('/login',loginVerify,login);
 //获取用户动态
@@ -30,5 +31,7 @@ userRouter.get('/recommend',getRecUser);
 //获取用户收藏
 userRouter.get('/sub',getUserSub);
 //获取用户已经加入的专题
-userRouter.get('/topic/join',getUserJoinTopic)
+userRouter.get('/topic/join',getUserJoinTopic);
+//添加拥护简介
+userRouter.post('/desc',authVerify,setUserDesc)
 module.exports=userRouter;

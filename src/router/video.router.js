@@ -11,7 +11,8 @@ const {
   addVideoCate,
   getVideoAllCate,
   addCateForVio,
-  getCateVideo
+  getCateVideo,
+  getCommVideo
 }=require('../controller/video.controller');
 const {
   videoHandle,
@@ -41,5 +42,7 @@ videoRouter.get('/cate/all',getVideoAllCate);
 //为视频添加cate
 videoRouter.post('/cate',authVerify,addCateForVio)
 //获取cate下视频
-videoRouter.get('/cate',getCateVideo)
+videoRouter.get('/cate',getCateVideo);
+//获取推荐视频
+videoRouter.get('/commend',getCommVideo)
 module.exports=videoRouter;

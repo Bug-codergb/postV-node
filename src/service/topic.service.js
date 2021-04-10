@@ -183,5 +183,24 @@ class TopicService{
     const result=await connection.execute(sql,[topicId,userId]);
     return result[0];
   }
+  //获取专题成员
+  async getTopicMemberService(topicId)
+  {
+    try{
+      const desc='`desc`';
+      const sql=`select leader,tu.topicId,topic.name,
+      JSON_ARRAYAGG(JSON_OBJECT('userId',tu.userId,'userName',userName,'avatarUrl',avatarUrl,'desc',${desc})) as users
+      from topic_user as tu
+      LEFT JOIN topic on topic.topicId=tu.topicId
+      LEFT JOIN user on user.userId=tu.userId
+      where tu.topicId=?
+      GROUP BY tu.topicId`;
+      const result=await connection.execute(sql,[topicId]);
+      return result[0]
+    }catch(e)
+    {
+      console.log(e)
+    }
+  }
 }
 module.exports=new TopicService();

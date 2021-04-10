@@ -145,5 +145,13 @@ class UserService {
         const result=await connection.execute(sql,[userId]);
         return result[0]    
     }
+    //添加用户简介
+    async setUserDescService(userId,desc)
+    {
+        const description='`desc`'
+        const sql=`update user set ${description}=? where userId=?`;
+        const result=await connection.execute(sql,[desc,userId]);
+        return result[0]
+    }
 }
 module.exports = new UserService();

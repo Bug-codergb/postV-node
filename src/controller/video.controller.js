@@ -10,7 +10,8 @@ const {
   addVideoCateService,
   getVideoAllCateService,
   addCateForVioService,
-  getCateVideoService
+  getCateVideoService,
+  getCommVideoService
 } = require("../service/video.service");
 class VideoController{
   async create(ctx,next)
@@ -114,6 +115,12 @@ class VideoController{
     const {categoryId}=ctx.query;
     const result=await getCateVideoService(categoryId);
     ctx.body=result[0];
+  }
+  //获取推荐视频
+  async getCommVideo(ctx,next)
+  {
+    const result=await getCommVideoService();
+    ctx.body=result
   }
 }
 module.exports=new VideoController()

@@ -16,7 +16,8 @@ const {
   subTopicContentService,
   isSubService,
   getTopicContentDetailService,
-  joinTopicService
+  joinTopicService,
+  getTopicMemberService
 } = require('../service/topic.service')
 class TopicController {
   async create(ctx, next) {
@@ -172,5 +173,12 @@ class TopicController {
     const result=await joinTopicService(userId,topicId);
     ctx.body=result;
   }
+  //获取专题成员
+  async getTopicMember(ctx,next)
+  {
+    const {topicId}=ctx.query;
+    const result=await getTopicMemberService(topicId);
+    ctx.body=result[0];
+  }
 }
-module.exports = new TopicController()
+module.exports = new TopicController()    
