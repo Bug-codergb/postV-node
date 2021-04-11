@@ -188,7 +188,8 @@ class TopicService{
   {
     try{
       const desc='`desc`';
-      const sql=`select leader,tu.topicId,topic.name,
+      const sql=`select leader,tu.topicId,topic.name,(select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl) 
+      from user where leader=user.userId) as leader,
       JSON_ARRAYAGG(JSON_OBJECT('userId',tu.userId,'userName',userName,'avatarUrl',avatarUrl,'desc',${desc})) as users
       from topic_user as tu
       LEFT JOIN topic on topic.topicId=tu.topicId
@@ -201,6 +202,21 @@ class TopicService{
     {
       console.log(e)
     }
+  }
+  //获取推荐专题
+  async getRecTopicService()
+  {
+      const sql=`SELECT topic.topicId,name,topic.createTime,topic.views,follow,description,picUrl,
+      (select JSON_OBJECT('userId',leader,'userName',userName,'avatarUrl',avatarUrl) from user where user.userId=leader) as user,
+      count(topic.topicId) as content
+      from topic
+      LEFT JOIN topic_img as ti on ti.topicId=topic.topicId
+      LEFT JOIN topic_content as tc on tc.topicId=topic.topicId
+      GROUP BY topic.topicId
+      ORDER BY content desc
+      limit 0 ,15`;
+      const result=await connection.execute(sql);
+      return result[0];
   }
 }
 module.exports=new TopicService();

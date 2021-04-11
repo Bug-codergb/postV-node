@@ -18,7 +18,8 @@ const {
   subTopicContent,
   getTopicContentDetail,
   joinTopic,
-  getTopicMember
+  getTopicMember,
+  getRecTopic
 }=require('../controller/topic.controller')
 //添加话题
 topicRouter.post('/',authVerify,create);
@@ -53,5 +54,7 @@ topicRouter.get('/content/detail',getTopicContentDetail)
 //加入专题
 topicRouter.post('/join',authVerify,joinTopic);
 //获取专题成员
-topicRouter.get('/member',getTopicMember)
+topicRouter.get('/member',getTopicMember);
+//获取推荐专题
+topicRouter.get('/recommend',getRecTopic)
 module.exports=topicRouter;

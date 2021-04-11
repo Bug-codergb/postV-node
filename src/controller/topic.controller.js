@@ -17,7 +17,8 @@ const {
   isSubService,
   getTopicContentDetailService,
   joinTopicService,
-  getTopicMemberService
+  getTopicMemberService,
+  getRecTopicService
 } = require('../service/topic.service')
 class TopicController {
   async create(ctx, next) {
@@ -179,6 +180,12 @@ class TopicController {
     const {topicId}=ctx.query;
     const result=await getTopicMemberService(topicId);
     ctx.body=result[0];
+  }
+  //获取推荐专题
+  async getRecTopic(ctx,next)
+  {
+    const result=await getRecTopicService();
+    ctx.body=result;
   }
 }
 module.exports = new TopicController()    
