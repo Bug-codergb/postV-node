@@ -39,13 +39,33 @@ class SearchService {
     const result=await connection.execute(sql);
     return result[0]
   }
+  //话题搜索
+  async topicSearch(keyword){
+    const desc='`desc`';
+    const sql=`select topic.topicId,name,topic.updateTime,views,follow,description,
+    (select ti.picUrl from topic_img as ti where ti.topicId=topic.topicId) as picUrl,
+    (select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl) 
+    from user where user.userId=leader) as leader,
+    JSON_ARRAYAGG(JSON_OBJECT('title',title,'topic_content_id',tc.id,'user',
+    (select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl,'desc',${desc}) from user where user.userId=tc.userId ),
+    'picUrl',(select JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) from topic_content_img as tci where tci.topic_content_id=tc.id)
+    )) AS content
+    from topic
+    LEFT JOIN topic_content as tc on tc.topicId =topic.topicId
+    GROUP BY topic.topicId
+    having name like '%${keyword}%'`;
+    const result=await connection.execute(sql);
+    return result[0]
+  }
   async searchService(keyword) {   
     try {
-     const [momentResult,userResult]=await Promise.all([new SearchService().momentSearch(keyword),
-                                                        new SearchService().userSearch(keyword)]);
+     const [momentResult,userResult,topicResult]=await Promise.all([new SearchService().momentSearch(keyword),
+                                                        new SearchService().userSearch(keyword),
+                                                        new SearchService().topicSearch(keyword)]);
     return {
       user:userResult,
-      moment:momentResult
+      moment:momentResult,
+      topic:topicResult
     }
     } catch (e) {
       console.log(e)
