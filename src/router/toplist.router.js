@@ -3,10 +3,13 @@ const toplistRouter=new Router();
 
 const {
   getToplistPic,
-  getToplistVio
+  getToplistVio,
+  getToplistArticle
 }=require('../controller/toplist.controller');
-
+//文章榜单
 toplistRouter.get('/toplist/picture',getToplistPic);
 //获取视频榜单
 toplistRouter.get('/toplist/video',getToplistVio)
-module.exports=toplistRouter;
+//文章榜单
+toplistRouter.get('/toplist/article',getToplistArticle)
+module.exports=toplistRouter;  

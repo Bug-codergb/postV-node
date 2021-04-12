@@ -4,12 +4,12 @@ const {
   APP_HOST
 }=require('../app/config')
 class KnowledgeService{
-  async createService(title,userId,vip)
+  async createService(title,userId,vip,description)
   {
     const id=new Date().getTime();
-    const sql=`insert into knowledge(kid,title,userId,vip) values(?,?,?,?)`;
-    const result=await connection.execute(sql,[id,title,userId,vip]);
-    return result[0];
+    const sql=`insert into knowledge(kid,title,userId,vip,description) values(?,?,?,?,?)`;
+    const result=await connection.execute(sql,[id,title,userId,vip,description]);
+    return id;
   }
   //为课程配图
   async setKnowImgService(kid,mimetype,filename,size)

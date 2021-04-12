@@ -1,6 +1,7 @@
 const {
   getToplistPicService,
-  getToplistVioService
+  getToplistVioService,
+  getToplistArticleService
 }=require('../service/toplist.service')
 class ToplistController{
   async getToplistPic(ctx,next)
@@ -14,6 +15,13 @@ class ToplistController{
   {
     const {offset,limit}=ctx.query;
     const result=await getToplistVioService(offset,limit);
+    ctx.body=result;
+  }
+  //文章榜单
+  async getToplistArticle(ctx,next)
+  {
+    const {offset,limit}=ctx.query;
+    const result=await getToplistArticleService(offset,limit);
     ctx.body=result;
   }
 }

@@ -6,7 +6,7 @@ class AdvertisementService{
     const id=new Date().getTime();
     const sql=`insert into advertisement(id,url,title) values(?,?,?)`;
     const result=await connection.execute(sql,[id,url,title]);
-    return result[0];
+    return id;
   }
   async uploadImgService(advertId,userId,mimetype,fileName)
   {

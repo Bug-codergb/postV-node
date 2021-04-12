@@ -3,7 +3,9 @@ class BannerService {
   async getNewBannerService() {
     const sql = `select moment.momentId,moment.title,moment.createTime,
                         if(picture.picUrl is null,null,JSON_ARRAYAGG(picture.picUrl)) as pictures,
-                        (select count(view.momentId) from view where view.momentId=moment.momentId) as views
+                        (select count(view.momentId) from view where view.momentId=moment.momentId) as views,
+                        (select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl) from user
+												 where user.userId=moment.userId) as user
                 from moment 
                 LEFT JOIN picture on moment.momentId=picture.momentId
                 where moment.status=1
