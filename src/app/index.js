@@ -38,6 +38,10 @@ const movieRouter=require('../router/movie.router');
 
 //课程
 const knowledgeRouter=require('../router/knowledge.router');
+//广告
+const advertRouter=require('../router/advertisement.router')
+
+
 app.use(async (ctx, next) => {
     ctx.set("Access-Control-Allow-Origin", "*")
     ctx.set('Access-Control-Allow-Headers','POST,Origin,Content-Type,Accept,authorization')
@@ -90,6 +94,10 @@ app.use(movieRouter.routes());
 app.use(movieRouter.allowedMethods());
 
 app.use(knowledgeRouter.routes())
-app.use(knowledgeRouter.allowedMethods())
+app.use(knowledgeRouter.allowedMethods());
+
+app.use(advertRouter.routes());
+app.use(advertRouter.allowedMethods());
+
 app.on('error',errorHandle)
 module.exports=app;

@@ -49,7 +49,8 @@ class SearchService {
     JSON_ARRAYAGG(JSON_OBJECT('title',title,'topic_content_id',tc.id,'user',
     (select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl,'desc',${desc}) from user where user.userId=tc.userId ),
     'picUrl',(select JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) from topic_content_img as tci where tci.topic_content_id=tc.id)
-    )) AS content
+    )) AS content,
+    (select count(tu.topicId) from topic_user as tu where tu.topicId=topic.topicId) as users
     from topic
     LEFT JOIN topic_content as tc on tc.topicId =topic.topicId
     GROUP BY topic.topicId

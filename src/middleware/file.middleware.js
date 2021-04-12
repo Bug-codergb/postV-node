@@ -33,6 +33,10 @@ const knowImgUpload=Multer({
 const knowContentUpload=Multer({
     dest:'./upload/knowContent/'
 })
+//广告封面
+const advertUpload=Multer({
+    dest:'./upload/advert/'
+})
 
 const avatarHandle=avatarUpload.single('avatar');
 const pictureHandle=pictureUpload.array('picture');
@@ -53,6 +57,8 @@ const knowContentHandle=knowContentUpload.array('knowContent');
 
 //话题封面
 const topicCoverHandle=topicCoverUpload.single('topicCover');
+//广告
+const advertImgHandle=advertUpload.single('advertImg');
 module.exports={
     avatarHandle,
     pictureHandle,
@@ -63,5 +69,6 @@ module.exports={
     movieImgHandle,
     knowHandle,
     knowContentHandle,
-    topicCoverHandle
+    topicCoverHandle,
+    advertImgHandle
 }
