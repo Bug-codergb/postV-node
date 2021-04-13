@@ -112,7 +112,11 @@ class UserService {
     async getUserSubService(userId)
     {
        try{
-        const sql=`select JSON_ARRAYAGG(JSON_OBJECT('momentId',subscribe.momentId,'type',type,'title',title,'picUrl',
+        const sql=`select JSON_ARRAYAGG(JSON_OBJECT('momentId',subscribe.momentId,'type',type,'title',title,
+        'user',
+        (select JSON_OBJECT('userId',moment.userId,'userName',userName,'avatarUrl',avatarUrl) from moment
+				 LEFT JOIN user on user.userId=moment.userId where moment.momentId=subscribe.momentId ),
+        'picUrl',
         if(type=0,(select JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) from picture where picture.momentId=subscribe.momentId),
                         (select JSON_ARRAYAGG(JSON_OBJECT('picUrl',vioimg.url)) 
                                     from video LEFT JOIN vioimg on video.vid=vioimg.vid where video.momentId=subscribe.momentId) ),
