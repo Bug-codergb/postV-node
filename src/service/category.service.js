@@ -13,6 +13,13 @@ class CategoryService{
     const result=await connection.execute(sql,[offset,limit]);
     return result[0]
   }
+  //获取分类名称根据分类ID
+  async getCateNameByIdService(categoryId)
+  {
+    const sql=`select name from category where categoryId=?`;
+    const result=await connection.execute(sql,[categoryId]);
+    return result[0];
+  }
   async addCheckMomentService(userId, title, content,cate)
   {
     const id=new Date().getTime();

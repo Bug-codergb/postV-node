@@ -91,16 +91,22 @@ class UserService {
     }
     async getRecUserService()
     {
-        const sql=`select fans.userId,user.userName,user.avatarUrl,count(fans.userId) as fanCount,
-                 JSON_ARRAYAGG(JSON_OBJECT('fanId',fanId,'fanName',fanName,
-                'avatarUrl',(select avatarUrl from user where fanId=user.userId))) as fans
-                            from fans
+        const desc='`desc`'
+        try{
+        const sql=`select fans.userId,user.userName,user.avatarUrl,${desc},count(fans.userId) as fanCount,
+        JSON_ARRAYAGG(JSON_OBJECT('fanId',fanId,'fanName',fanName,
+        'avatarUrl',(select avatarUrl from user where fanId=user.userId))) as fans
+                    from fans
         LEFT JOIN user on user.userId=fans.userId
         GROUP BY fans.userId
         ORDER BY fanCount desc
         limit 0,15`;
         const result=await connection.execute(sql);
         return result[0]
+        }catch(e)
+        {
+            console.log(e);
+        }
     }
     //获取用户收藏
     async getUserSubService(userId)

@@ -1,11 +1,12 @@
 const connection = require('../app/database');
+const { getCateNameByIdService } = require('./category.service');
 class MomentService {
     async createService(userId, title, content, cate) {
         const id = new Date().getTime();
         let type = 0;
-        const state = `select name from category where categoryId=?`;
-        const res = await connection.execute(state, [cate]);
-        if (res[0][0].name === '视频') {
+        const res=await getCateNameByIdService(cate);
+        const {name}=res[0];
+        if (name === '视频'||name==="预告片"||name==="微课堂") {
             type = 1
         }
         const sql = `insert into moment (momentId,userId,title,content,categoryId,type) values(?,?,?,?,?,?)`;
