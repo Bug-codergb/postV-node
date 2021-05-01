@@ -11,7 +11,7 @@ const {
 }=require('../service/thumbs.service')
 const errorType=require('../constants/errorType.js');
 class ThumbsController{
-    async addThumbs(ctx,next)
+    async addThumbs(ctx,next)     
     {
         const {id}=ctx.query;
         const result=await getMomentByIdService(id);  
