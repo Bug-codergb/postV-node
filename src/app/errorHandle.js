@@ -12,7 +12,7 @@ function errorHandle(error,ctx){
         case errorType.USER_NAME_OR_PASSWORD_IS_INCORRECT:
             status=400;
             message="用户名或者密码错误";break;
-        case errorType.PERMISSION_DENIED:
+        case errorType.PERMISSION_DENIED:  
             status=401;
             message="请登录";break;
         case errorType.NO_PERMISSION_TO_MODIFY:

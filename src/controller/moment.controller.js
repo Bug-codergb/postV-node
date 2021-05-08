@@ -1,3 +1,11 @@
+const fs=require("fs");
+const path=require("path");
+const {
+    isExistsFile
+}=require("../utils/isExists");
+const {
+    delFile
+}=require("../utils/deleteFile")
 const errorType = require('../constants/errorType')
 const {
     createService,
@@ -9,7 +17,8 @@ const {
     getHotMomentService,
     subMomentService,
     cancelSubService,
-    getDetailCountService
+    getDetailCountService,
+    getBriefMomentService
 } = require('../service/moment.service')
 class MomentController {
     //发布动态
@@ -62,8 +71,45 @@ class MomentController {
     //删除动态
     async delMoment(ctx, next) {
         const { momentId } = ctx.query;
-        const result = await delMomentService(momentId);
-        ctx.body = result;
+        const result=await getBriefMomentService(momentId);
+        const root=path.join(__dirname,'../../');
+        const {type}=result[0];
+        const {file}=result[0];
+        if(type===1)
+        {
+            const videoPath=path.resolve(root,`upload/video/${file.video}`);
+            const vioImgPath=path.resolve(root,`upload/videoImg/${file.cover}`);
+            isExistsFile(videoPath).then(data=>{
+                delFile(data).then(data=>{
+                    console.log(data);
+                })
+            }).catch(e=>{
+                console.log(e)
+            })
+            isExistsFile(vioImgPath).then(data=>{
+                delFile(data).then(data=>{
+                    console.log(data)
+                })
+            }).catch(e=>{
+                console.log(e)
+            })
+
+        }
+        else if(type===0)
+        {
+            file.forEach((item,index)=>{
+              const picPath=path.resolve(root,`upload/picture/${item.pic}`);
+              isExistsFile(picPath).then(data=>{
+                delFile(data).then(data=>{
+                    console.log(data);
+                })
+              }).catch(e=>{
+                console.log(e);
+              })
+            })
+        }
+        const res= await delMomentService(momentId);
+        ctx.body = res;
     }
     //获取推荐动态
     async getRecMoment(ctx, next) {

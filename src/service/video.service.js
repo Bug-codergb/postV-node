@@ -55,7 +55,7 @@ class VideoService{
   async getVideoDetailService(vid)  
   {
     const sql=`
-       select v.vid,v.url,v.updateTime,vi.url as coverUrl,v.playCount,
+       select v.vid,v.url,v.duration,v.updateTime,vi.url as coverUrl,v.playCount,
        (select JSON_OBJECT('momentId',v.momentId,'title',moment.title,'moment.content',moment.content) 
 			  from moment where v.momentId=moment.momentId) as moment,
 				(select JSON_OBJECT('userId',u.userId,'userName',u.userName,'avatarUrl',u.avatarUrl) from user as u where u.userId=v.userId) as user
@@ -128,7 +128,7 @@ class VideoService{
     LEFT JOIN vioimg as vi on vi.vid=video.vid
     where categoryId is not null
     ORDER BY playCount desc
-    limit 0,15`;
+    limit 0,8`;
     const result=await connection.execute(sql);
     return result[0]
   }

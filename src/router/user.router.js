@@ -32,6 +32,6 @@ userRouter.get('/recommend',getRecUser);
 userRouter.get('/sub',getUserSub);
 //获取用户已经加入的专题
 userRouter.get('/topic/join',getUserJoinTopic);
-//添加拥护简介
+//添加用户简介
 userRouter.post('/desc',authVerify,setUserDesc)
 module.exports=userRouter;

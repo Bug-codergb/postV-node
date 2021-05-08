@@ -6,7 +6,7 @@ const {
   getToplistVio,
   getToplistArticle
 }=require('../controller/toplist.controller');
-//文章榜单
+//图片榜单
 toplistRouter.get('/toplist/picture',getToplistPic);
 //获取视频榜单
 toplistRouter.get('/toplist/video',getToplistVio)

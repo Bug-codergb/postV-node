@@ -13,9 +13,26 @@ class MomentService {
         const result = await connection.execute(sql, [id, userId, title, content, cate, type]);
         return id
     }
+    //获取动态简略信息（单条）
+    async getBriefMomentService(id)
+    {
+      const sql=`
+        select m.momentId,title,m.userId,type,
+        if(type=1,(select JSON_OBJECT('vid',vid,'video',v.fileName,'cover',vi.fileName) 
+                        from vioimg as vi where vi.vid=v.vid ),
+                        (select JSON_ARRAYAGG(JSON_OBJECT('pic',picture.fileName))
+                                    from picture where picture.momentId=m.momentId )	) as file
+        from moment as m
+        left join video as v on v.momentId=m.momentId 
+        where m.momentId=?`;
+      const result=await connection.execute(sql,[id]);
+      return result[0];
+    }
     //获取单条动态
     async getMomentByIdService(momentId) {
         const sql = `select moment.momentId,title,moment.content,moment.createTime,moment.updateTime,type,
+        (select JSON_OBJECT('categoryId',category.categoryId,'name',category.name) 
+				from category where category.categoryId=moment.categoryId) as category,
         (select IF(type=0,(SELECT JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) 
                           from picture where moment.momentId=picture.momentId),
                          (select JSON_ARRAYAGG(JSON_OBJECT('picUrl',vioimg.url)) 
@@ -109,13 +126,14 @@ class MomentService {
 														from picture where picture.momentId=moment.momentId),
 														(select if(vioimg.url is null,null,JSON_ARRAYAGG(JSON_OBJECT('picUrl',vioimg.url))  )
 														from video LEFT JOIN vioimg on vioimg.vid=video.vid where video.momentId=moment.momentId)) as picUrl,
-                                                        if(type=1,(select vid from video where video.momentId=moment.momentId),null) as vid,
+                                                        if(type=1,(select JSON_OBJECT('vid',vid,'playCount',playCount,'duration',duration) 
+				from video where video.momentId=moment.momentId),null) as video,
 			  (select count(s.momentId) from subscribe as s where s.momentId=moment.momentId) as subs,
 			  (select count(c.momentId) from comment as c where c.momentId=moment.momentId and c.replyId is null) as comments,
 				(select count(t.momentId) from thumbs as t where t.momentId=moment.momentId) as thumbs
         from category as c
         LEFT JOIN moment on moment.categoryId=c.categoryId
-        where c.categoryId=? and moment.status=1
+        where c.categoryId=? and moment.status=1  
         GROUP BY momentId
         HAVING picUrl is not null
         ORDER BY views desc

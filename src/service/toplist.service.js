@@ -15,7 +15,9 @@ class ToplistService{
     where com.momentId=m.momentId and replyId is null) as comments,
     (select count(t.momentId) 
     from picture LEFT JOIN moment as mo on mo.momentId=picture.momentId LEFT JOIN thumbs as t on t.momentId=mo.momentId
-    where t.momentId=m.momentId) as thumbs
+    where t.momentId=m.momentId) as thumbs,
+		(select count(view.momentId) from view LEFT JOIN moment as mo on mo.momentId=view.momentId 
+		 where mo.momentId=p.momentId) as view
     from picture as p
     LEFT JOIN moment as m on m.momentId=p.momentId
     left join category as c on c.categoryId=m.categoryId

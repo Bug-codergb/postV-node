@@ -34,6 +34,7 @@ class AdvertisementController{
   //获取所有广告
   async getAllAdvert(ctx,next)
   {
+    console.log(ctx.query)
     try{
       const {offset,limit}=ctx.query;
       const result=await getAllAdvertService(offset,limit);

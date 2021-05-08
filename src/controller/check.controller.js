@@ -6,7 +6,8 @@ const {
 
 class CheckController {
   async getAllCheck(ctx, next) {
-    const result = await getAllCheckService();
+    const {offset,limit}=ctx.query;
+    const result = await getAllCheckService(offset,limit);
     ctx.body = result;
   }
   //审核动态
