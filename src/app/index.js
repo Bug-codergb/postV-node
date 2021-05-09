@@ -1,7 +1,8 @@
 const Koa=require('koa');
 const koaBodyparser=require('koa-bodyparser');
+const webSocket=require('koa-websocket');
 const app=new Koa();
-
+const webApp=webSocket(app);
 const errorHandle=require('./errorHandle')
 //用户
 const userRouter=require('../router/user.router');
@@ -39,8 +40,9 @@ const movieRouter=require('../router/movie.router');
 //课程
 const knowledgeRouter=require('../router/knowledge.router');
 //广告
-const advertRouter=require('../router/advertisement.router')
-
+const advertRouter=require('../router/advertisement.router');
+//聊天
+const chatRouter=require("../router/chat.router");
 
 app.use(async (ctx, next) => {
     ctx.set("Access-Control-Allow-Origin", "*")
@@ -99,5 +101,10 @@ app.use(knowledgeRouter.allowedMethods());
 app.use(advertRouter.routes());
 app.use(advertRouter.allowedMethods());
 
+webApp.ws.use(chatRouter.routes());
+
 app.on('error',errorHandle)
-module.exports=app;
+module.exports={
+    app,
+    webApp,
+};

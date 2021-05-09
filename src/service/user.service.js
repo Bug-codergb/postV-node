@@ -29,7 +29,7 @@ class UserService {
 			 (select JSON_ARRAYAGG(JSON_OBJECT('picUrl',picture.picUrl)) from picture where m.momentId=picture.momentId ) as pictures
         from moment as m
         LEFT JOIN user on m.userId=user.userId
-        where user.userId=?`;
+        where user.userId=? and status=1`;
         const result=await connection.execute(sql,[userId]);
         return result[0]
     }
