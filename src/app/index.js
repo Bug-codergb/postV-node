@@ -44,7 +44,9 @@ const advertRouter=require('../router/advertisement.router');
 //聊天
 const chatRouter=require("../router/chat.router");
 //验证码
-const captchaRouter=require("../router/imgVerify.router")
+const captchaRouter=require("../router/imgVerify.router");
+//频道
+const channelRouter=require("../router/channel.router");
 app.use(async (ctx, next) => {
     ctx.set("Access-Control-Allow-Origin", "*")
     ctx.set('Access-Control-Allow-Headers','POST,Origin,Content-Type,Accept,authorization')
@@ -107,6 +109,9 @@ app.use(chatRouter.allowedMethods());
 
 app.use(captchaRouter.routes());
 app.use(captchaRouter.allowedMethods());
+
+app.use(channelRouter.routes());
+app.use(channelRouter.allowedMethods());
 
 webApp.ws.use(chatRouter.routes());
 
