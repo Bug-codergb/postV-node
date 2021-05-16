@@ -5,7 +5,9 @@ const PERMISSION_DENIED='Permission denied'
 
 const RESOURCE_DOES_NOT_EXIST='Resource does not exist'
 const NO_PERMISSION_TO_MODIFY='No permission to modify'
-const PARAMETER_CANNOT_BE_EMPTY="Parameter cannot be empty"
+const PARAMETER_CANNOT_BE_EMPTY="Parameter cannot be empty";
+
+const VERIFICATION_CODE_ERROR="Verification Code is error"
 module.exports={
     USER_NAME_OR_PASSWORD_IS_NOT_NULL,
     USER_ALREADY_EXISTS,
@@ -13,5 +15,6 @@ module.exports={
     PERMISSION_DENIED,
     NO_PERMISSION_TO_MODIFY,
     RESOURCE_DOES_NOT_EXIST,
-    PARAMETER_CANNOT_BE_EMPTY
+    PARAMETER_CANNOT_BE_EMPTY,
+    VERIFICATION_CODE_ERROR
 }

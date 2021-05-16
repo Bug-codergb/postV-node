@@ -9,7 +9,8 @@ class UserService {
     //根据userId获取用户简略信息
     async getUserMsgByIdService(userId)
     {
-        const sql = `select * from user where userId=?`;
+        const desc=`'desc'`;
+        const sql = `select userId,userName,createTime,updateTime,avatarUrl,${desc},auth,vip from user where userId=?`;
         const result = await connection.execute(sql, [userId]);
         return result[0]
     }

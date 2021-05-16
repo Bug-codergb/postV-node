@@ -24,6 +24,9 @@ function errorHandle(error,ctx){
         case errorType.PARAMETER_CANNOT_BE_EMPTY:
             status=400;
             message="请求错误";break;
+        case errorType.VERIFICATION_CODE_ERROR:
+           status=400;
+           message="验证码错误";break;
         default:
             status=404;
             message="资源不存在";

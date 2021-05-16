@@ -43,7 +43,8 @@ const knowledgeRouter=require('../router/knowledge.router');
 const advertRouter=require('../router/advertisement.router');
 //聊天
 const chatRouter=require("../router/chat.router");
-
+//验证码
+const captchaRouter=require("../router/imgVerify.router")
 app.use(async (ctx, next) => {
     ctx.set("Access-Control-Allow-Origin", "*")
     ctx.set('Access-Control-Allow-Headers','POST,Origin,Content-Type,Accept,authorization')
@@ -100,6 +101,12 @@ app.use(knowledgeRouter.allowedMethods());
 
 app.use(advertRouter.routes());
 app.use(advertRouter.allowedMethods());
+
+app.use(chatRouter.routes())
+app.use(chatRouter.allowedMethods());
+
+app.use(captchaRouter.routes());
+app.use(captchaRouter.allowedMethods());
 
 webApp.ws.use(chatRouter.routes());
 
