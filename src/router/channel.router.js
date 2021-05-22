@@ -11,7 +11,8 @@ const {
   getChannelVideo,
   addCateCon,
   addChannelCateCover,
-  getChannelCateCover
+  getChannelCateCover,
+  getChannelCateCon
 }=require("../controller/channel.controller");
 const {authVerify}=require("../middleware/auth.middleware")
 //上传内容
@@ -36,5 +37,8 @@ channelRouter.get("/cover",getChannelCover);
 //上传视频
 channelRouter.post("/video",authVerify,channelVideoHandle,uploadVideo);
 //获取视频
-channelRouter.get("/video",getChannelVideo)  
+channelRouter.get("/video",getChannelVideo);
+//获取子分类
+channelRouter.get("/cate/con",getChannelCateCon)
+
 module.exports=channelRouter  

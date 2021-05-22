@@ -9,7 +9,8 @@ const {
   getChannelVideoService,
   addCateConService,
   addChannelCateCoverService,
-  getChannelCateCoverService
+  getChannelCateCoverService,
+  getChannelCateConService
 }=require("../service/channel.service.js")
 class ChannelController{
   async create(ctx,next){
@@ -91,6 +92,12 @@ class ChannelController{
     const {fileName,mimetype,dest}=result[0];
     ctx.set("content-type",mimetype);
     ctx.body=fs.createReadStream(`${dest}/${fileName}`);
+  }
+  //获取子分类
+  async getChannelCateCon(ctx,next){
+    const {id}=ctx.query;
+    const result=await getChannelCateConService(id);
+    ctx.body=result;
   }
 }
 module.exports=new ChannelController();

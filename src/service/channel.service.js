@@ -81,5 +81,13 @@ class ChannelService{
     const result=await connection.execute(sql,[id]);
     return result[0]
   }
+  //获取子分类
+  async getChannelCateConService(id){
+    const sql=`select *
+              from channel_cate_con
+              where cateId=?`;
+    const result=await connection.execute(sql,[id]);
+    return result[0];
+  }
 }
 module.exports=new ChannelService();
