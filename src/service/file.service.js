@@ -26,9 +26,10 @@ class FileService{
     async addMomentPicService(momentId,userId,mimetype,fileName,size,picUrl,originalname)
     {
         const id=new Date().getTime();
+        
         const sql=`insert into picture(id,momentId,userId,mimetype,fileName,originalname,size,picUrl) values(?,?,?,?,?,?,?,?)`;
         const result=await connection.execute(sql,[id,momentId,userId,mimetype,fileName,originalname,size,`${picUrl}id=${id}`]);
-        return result
+        return `${picUrl}id=${id}`
     }
     async getMomentPicService(id)
     {

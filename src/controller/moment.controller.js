@@ -24,12 +24,8 @@ class MomentController {
     //发布动态
     async create(ctx, next) {
         const { userId } = ctx.user;
-        let { title, content, cate } = ctx.request.body;
-        const reg0 = /\n/g;
-        const reg1 = /\s/g
-        content = content.replace(reg0, '<br/>');
-        content = content.replace(reg1, '&nbsp;');
-        const result = await createService(userId, title, content, cate);
+        let {momentId,title, content, cate } = ctx.request.body;
+        const result = await createService(momentId,userId, title, content, cate);
         ctx.body = result
     }
     async getMomentById(ctx, next) {

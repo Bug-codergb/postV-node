@@ -1,8 +1,7 @@
 const connection = require('../app/database');
 const { getCateNameByIdService } = require('./category.service');
 class MomentService {
-    async createService(userId, title, content, cate) {
-        const id = new Date().getTime();
+    async createService(momentId,userId, title, content, cate) {
         let type = 0;
         const res=await getCateNameByIdService(cate);
         const {name}=res[0];
@@ -10,8 +9,8 @@ class MomentService {
             type = 1
         }
         const sql = `insert into moment (momentId,userId,title,content,categoryId,type) values(?,?,?,?,?,?)`;
-        const result = await connection.execute(sql, [id, userId, title, content, cate, type]);
-        return id
+        const result = await connection.execute(sql, [momentId, userId, title, content, cate, type]);
+        return momentId
     }
     //获取动态简略信息（单条）
     async getBriefMomentService(id)

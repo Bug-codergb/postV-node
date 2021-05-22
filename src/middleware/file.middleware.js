@@ -39,7 +39,15 @@ const advertUpload=Multer({
 })
 //专栏封面
 const channelCoverUpload=Multer({
-    dest:"./upload/channelCover"
+    dest:"./upload/channel/channelCover"
+})
+//频道视频
+const channelVideo=Multer({
+    dest:"./upload/channel/channelVideo"
+})
+//频道内容分类图片
+const channelCateCover=Multer({
+    dest:"./upload/channel/channelCateCover"
 })
 
 const avatarHandle=avatarUpload.single('avatar');
@@ -66,6 +74,10 @@ const advertImgHandle=advertUpload.single('advertImg');
 
 //专栏封面
 const channelCoverHandle=channelCoverUpload.single("cover");
+//视频
+const channelVideoHandle=channelVideo.single("channel_video");
+//频道内容分类图片
+const channelCateCoverHandle=channelCateCover.single("channel_cate_cover");
 module.exports={
     avatarHandle,
     pictureHandle,
@@ -78,5 +90,7 @@ module.exports={
     knowContentHandle,
     topicCoverHandle,
     advertImgHandle,
-    channelCoverHandle
+    channelCoverHandle,
+    channelVideoHandle,
+    channelCateCoverHandle
 }
