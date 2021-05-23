@@ -10,7 +10,8 @@ const {
   addCateConService,
   addChannelCateCoverService,
   getChannelCateCoverService,
-  getChannelCateConService
+  getChannelCateConService,
+  getCateDetailService
 }=require("../service/channel.service.js")
 class ChannelController{
   async create(ctx,next){
@@ -97,6 +98,12 @@ class ChannelController{
   async getChannelCateCon(ctx,next){
     const {id}=ctx.query;
     const result=await getChannelCateConService(id);
+    ctx.body=result;
+  }
+  //获取分类下（体育，搞笑）内容
+  async getCateDetail(ctx,next){
+    const {offset,limit,cateId}=ctx.query;
+    const result=await getCateDetailService(cateId,offset,limit);
     ctx.body=result;
   }
 }

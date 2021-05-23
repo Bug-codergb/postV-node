@@ -89,5 +89,20 @@ class ChannelService{
     const result=await connection.execute(sql,[id]);
     return result[0];
   }
+  //获取分类下（体育，搞笑）内容
+  async getCateDetailService(cateId,offset,limit){
+    const sql=`select id,name,coverUrl,c.createTime,c.updateTime,
+              JSON_ARRAYAGG(JSON_OBJECT('cId',cId,'title',title,'content',content,'user',
+              (select JSON_OBJECT('userId',channel.userId,'userName',userName,'avatarUrl',avatarUrl) 
+              from user where user.userId=channel.userId),
+              'picUrl',picUrl,'vidUrl',vidUrl,'createTime',channel.createTime,'updateTime',channel.updateTime)) as channels
+              from channel_cate_con as c
+              left join channel on channel.cateId=id
+              where cId is not null and c.cateId=?
+              group by id
+              limit ?,?`;
+    const result=await connection.execute(sql,[cateId,offset,limit]);
+    return result[0];
+  }
 }
 module.exports=new ChannelService();

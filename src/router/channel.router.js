@@ -12,7 +12,9 @@ const {
   addCateCon,
   addChannelCateCover,
   getChannelCateCover,
-  getChannelCateCon
+  getChannelCateCon,
+
+  getCateDetail
 }=require("../controller/channel.controller");
 const {authVerify}=require("../middleware/auth.middleware")
 //上传内容
@@ -40,5 +42,6 @@ channelRouter.post("/video",authVerify,channelVideoHandle,uploadVideo);
 channelRouter.get("/video",getChannelVideo);
 //获取子分类
 channelRouter.get("/cate/con",getChannelCateCon)
-
+//获取曲分类下（体育，音乐）内容
+channelRouter.get("/cate/detail",getCateDetail)
 module.exports=channelRouter  
