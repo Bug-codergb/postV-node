@@ -27,7 +27,7 @@ class ChannelService{
   //添加分类内容
   async addCateConService(cateId,name){
     const id=new Date().getTime();
-    const url=`${APP_HOST}/${APP_PORT}/channel/cate/con/cover?id=${id}`;
+    const url=`${APP_HOST}:${APP_PORT}/channel/cate/con/cover?id=${id}`;
     const sql=`insert into channel_cate_con(id,name,cateId,coverUrl) values(?,?,?,?)`;
     const result=await connection.execute(sql,[id,name,cateId,url]);
     return result[0];

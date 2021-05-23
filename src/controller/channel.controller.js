@@ -85,7 +85,7 @@ class ChannelController{
     const result=await addChannelCateCoverService(id,filename,mimetype,destination,originalname);
     ctx.body=result;
   }
-  //获取分类内容图片
+  //获取分类内容图片  
   async getChannelCateCover(ctx,next){
     const {id}=ctx.query;
     const result=await getChannelCateCoverService(id);
