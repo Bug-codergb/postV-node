@@ -13,45 +13,50 @@ const {
   getCateVideoService,
   getCommVideoService
 } = require("../service/video.service");
+const {
+    isExistsFile
+}=require("../utils/isExists")
 class VideoController{
   async create(ctx,next)
   {
     // console.log(ctx.req.files)
      const {momentId}=ctx.query;
      const {userId}=ctx.user;
-     let vids=[];
      const {duration}=ctx.req.body;
-     console.log(duration);
-     for(let file of ctx.req.files)
-     {
-       const {mimetype,filename,size}=file;
-       const result=await createService(momentId,userId,mimetype,filename,size,duration);
-       vids.push(result);
-     }
-     ctx.body=vids;
+     const {mimetype,filename,size}=ctx.req.file;
+     const result=await createService(momentId,userId,mimetype,filename,size,duration);
+     ctx.body=result;
   }  
   async uploadVioImg(ctx,next)
-  {  
-     //console.log(ctx.req.files);
-     const vids=JSON.parse(ctx.query.vids);
-     if(vids)
+  {
+     const {vid}=ctx.query;
+     if(vid)
      {
-      for(let index in ctx.req.files)
-      {
-        const {mimetype,filename,size}=ctx.req.files[index];
-        const result=await uploadVioImgService(vids[index],mimetype,filename,size);
+        const {mimetype,filename,size}=ctx.req.file;
+        const result=await uploadVioImgService(vid,mimetype,filename,size);
         ctx.body=result;
-      }
      }
   }
   //获取视频封面
   async getVideoCover(ctx,next)
   {
-    const {vid}=ctx.query;
+    const {vid,type}=ctx.query;
     const result=await getVideoCoverService(vid)
-    const {mimetype,fileName}=result[0];
-    ctx.response.set('content-type',mimetype);
-    ctx.response.body=fs.createReadStream(`./upload/videoImg/${fileName}`);
+    let {mimetype,fileName}=result[0];
+    let newFileName=fileName;
+     try{
+         if(type) {
+             fileName = fileName + "-small";
+             const result=await isExistsFile(`./upload/videoImg/${fileName}`);
+             newFileName=fileName;
+         }
+         ctx.set('content-type',mimetype);
+         ctx.body=fs.createReadStream(`./upload/videoImg/${newFileName}`);
+     }catch(e){
+         ctx.set('content-type',mimetype);
+         ctx.body=fs.createReadStream(`./upload/videoImg/${newFileName}`);
+     }
+
   }
   //获取视频播放
   async getVideo(ctx,next)

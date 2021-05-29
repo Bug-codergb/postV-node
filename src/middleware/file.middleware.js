@@ -1,4 +1,6 @@
 const Multer=require('koa-multer');
+const Jimp=require('jimp');
+const path=require('path');
 
 const avatarUpload=Multer({
     dest:'./upload/avatar'
@@ -6,6 +8,11 @@ const avatarUpload=Multer({
 const pictureUpload=Multer({
     dest:'./upload/picture/'
 })
+//评论内容图片
+const commentImgUpload=Multer({
+  dest:"./upload/comment"
+})
+
 const videoUpload=Multer({
     dest:"./upload/video/"
 })
@@ -26,7 +33,6 @@ const movieUpload=Multer({
 const movieImgUpload=Multer({
     dest:"./upload/movieImg/"
 })
-
 const knowImgUpload=Multer({
     dest:'./upload/know/'
 })
@@ -51,10 +57,10 @@ const channelCateCover=Multer({
 })
 
 const avatarHandle=avatarUpload.single('avatar');
-const pictureHandle=pictureUpload.array('picture');
-const videoHandle=videoUpload.array('video');
+const pictureHandle=pictureUpload.single('picture');
+const videoHandle=videoUpload.single('video');
 //视频图片
-const videoImgHandle=videoImgUpload.array('videoImg');
+const videoImgHandle=videoImgUpload.single('videoImg');
 
 const topicImgHandle=topicImgUpload.array('topicImg');
 
@@ -78,7 +84,22 @@ const channelCoverHandle=channelCoverUpload.single("cover");
 const channelVideoHandle=channelVideo.single("channel_video");
 //频道内容分类图片
 const channelCateCoverHandle=channelCateCover.single("channel_cate_cover");
+
+//评论内容图片
+const commentImgHandle=commentImgUpload.single("comment_picture");
+
+async function reSizePic(ctx,next)
+{
+    const file=ctx.req.file;
+    const destPath=path.join(file.destination,file.filename);
+    Jimp.read(file.path).then(image=>{
+        image.resize(400,Jimp.AUTO).write(`${destPath}-small`);
+    })
+    await next();
+}
+
 module.exports={
+    reSizePic,
     avatarHandle,
     pictureHandle,
     videoHandle,
@@ -92,5 +113,6 @@ module.exports={
     advertImgHandle,
     channelCoverHandle,
     channelVideoHandle,
-    channelCateCoverHandle
+    channelCateCoverHandle,
+    commentImgHandle
 }

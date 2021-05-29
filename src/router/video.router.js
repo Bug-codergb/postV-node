@@ -16,7 +16,8 @@ const {
 }=require('../controller/video.controller');
 const {
   videoHandle,
-  videoImgHandle
+  videoImgHandle,
+    reSizePic
 }=require('../middleware/file.middleware');
 const {
   authVerify
@@ -24,7 +25,7 @@ const {
 //上传视频
 videoRouter.post('/upload',authVerify,videoHandle,create);
 //上传视频图片
-videoRouter.post('/img',authVerify,videoImgHandle,uploadVioImg)
+videoRouter.post('/img',authVerify,videoImgHandle,reSizePic,uploadVioImg)
 //获取视频封面
 videoRouter.get('/cover',getVideoCover)
 //获取视频播放(浏览器)

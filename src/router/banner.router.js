@@ -7,4 +7,4 @@ const {
 bannerRouter.get('/new',getNewBanner);
 //热门banner
 bannerRouter.get('/hot',getHotBanner)
-module.exports=bannerRouter    
+module.exports=bannerRouter

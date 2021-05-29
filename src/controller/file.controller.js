@@ -37,14 +37,11 @@ class FileController{
     {
         const {userId}=ctx.user;
         const picUrl=`${APP_HOST}:${APP_PORT}/moment/picture?`;
-        //console.log(ctx.req.files)
         let result='';
         const momentId=new Date().getTime();
-        for(let file of ctx.req.files)    
-        {
-            const {mimetype,filename,size,originalname}=file;
-            result=await addMomentPicService(momentId,userId,mimetype,filename,size,picUrl,originalname.replace(/\s+/g,''));
-        }
+        const {file}=ctx.req
+        const {mimetype,filename,size,originalname}=file;
+        result=await addMomentPicService(momentId,userId,mimetype,filename,size,picUrl,originalname.replace(/\s+/g,''));
         ctx.body={
             errno:0,
             data:[result],
@@ -53,17 +50,18 @@ class FileController{
     }
     async getMomentPic(ctx,next)
     {
-        const {id}=ctx.query;
+        const {id,type}=ctx.query;
         const result =await getMomentPicService(id);
         if(result.length===0)
         {
             const err=new Error(errorType.RESOURCE_DOES_NOT_EXIST);
             return ctx.app.emit('error',err,ctx)
         }
-        const {fileName,mimetype}=result[0];
-        //console.log(mimetype)
-       ctx.set('content-type',mimetype)
-        //ctx.type="flv-application/octet-stream"
+        let {fileName,mimetype}=result[0];
+        if(type){
+            fileName=fileName+"-small";
+        }
+        ctx.set('content-type',mimetype)
         ctx.body=fs.createReadStream(`./upload/picture/${fileName}`);
     }
     async deleteMomentPic(ctx,next)

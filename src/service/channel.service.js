@@ -104,5 +104,48 @@ class ChannelService{
     const result=await connection.execute(sql,[cateId,offset,limit]);
     return result[0];
   }
+  //获取频道内容详情
+  async getChannelDetailService(cId){
+    const sql=`select c.cId,c.title,c.content,c.picUrl,c.createTime,c.updateTime,
+    (select playCount from channel_video as cv where cv.cId=c.cId ) as playCount,
+       JSON_OBJECT('id',cc.id,'name',cc.name,'coverUrl',cc.coverUrl) as category,
+        JSON_OBJECT('userId',c.userId,'userName',user.userName,'avatarUrl',user.avatarUrl) AS user
+        from channel as c
+        LEFT JOIN channel_cate_con as cc on cc.id=c.cateId
+        LEFT JOIN user on user.userId=c.userId
+        where c.cId=?`;
+    const result=await connection.execute(sql,[cId]);
+    return result[0];
+  }
+  //获取频道内容播放地址
+  async getChannelUrlService(cId){
+    const sql=`select c.cId,c.vidUrl,cv.playCount,cv.duration 
+            from channel as c
+            LEFT JOIN channel_video as cv on cv.cId=c.cId
+            where c.cId=?`;
+    const result=await connection.execute(sql,[cId]);
+    return result[0];
+  }
+  //发表频道内容评论
+  async publishCommentService(cId,content,userId){
+    const id=new Date().getTime();
+    const sql=`insert into comment(commentId,content,userId,cId) values(?,?,?,?)`;
+    const result=await connection.execute(sql,[id,content,userId,cId]);
+    return result[0];
+  }
+  //获取子分类内容详情
+  async getCateConDetailService(id,offset,limit){
+    const sql=`
+      select id,name,coverUrl,cc.createTime,cc.updateTime,
+       JSON_OBJECT('id',cId,'title',title,'content',content,'picUrl',picUrl,'user',
+       (select JSON_OBJECT('userId',channel.userId,'userName',userName,'avatarUrl',avatarUrl) 
+       FROM user where user.userId=channel.userId)) AS channel
+       from channel_cate_con as cc
+       LEFT JOIN channel on cc.id=channel.cateId
+        where id=?
+        limit ?,?`;
+    const result=await connection.execute(sql,[id,offset,limit]);
+    return result[0];
+  }
 }
 module.exports=new ChannelService();

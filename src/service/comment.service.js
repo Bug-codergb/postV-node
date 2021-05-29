@@ -1,4 +1,8 @@
 const connection=require('../app/database');
+const {
+    APP_HOST,
+    APP_PORT
+}=require("../app/config")
 class CommentService{
     async createService(momentId,content,userId){
         try{
@@ -101,6 +105,24 @@ class CommentService{
         HAVING c.momentId=?`;
         const result=await connection.execute(sql,[momentId]);
         return result[0]
+    }
+    //上传评论图片
+    async uploadComImgService(filename,size,mimetype,originalname,destination){
+        const id=new Date().getTime();
+        const comId=new Date().getTime();
+        const url=`${APP_HOST}:${APP_PORT}/comment/image?id=${id}`;
+        const sql=`insert into comment_img(id,comId,picUrl,filename,size,mimetype,originalname,dest) values(?,?,?,?,?,?,?,?)`;
+        const result=await connection.execute(sql,[id,comId,url,filename,size,mimetype,originalname,destination]);
+        return {
+            comId,
+            url
+        };
+    }
+    //获取评论图片
+    async getCommentImgService(id){
+        const sql=`select * from comment_img where id=?`;
+        const result=await connection.execute(sql,[id]);
+        return result[0];
     }
 }
 module.exports=new CommentService();

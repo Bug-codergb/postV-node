@@ -1,6 +1,6 @@
 const Router=require("koa-router");
 const channelRouter=new Router({prefix:"/channel"});
-const {channelCoverHandle,channelVideoHandle,channelCateCoverHandle}=require("../middleware/file.middleware")
+const {channelCoverHandle,channelVideoHandle,channelCateCoverHandle,reSizePic}=require("../middleware/file.middleware")
 const {
   create,
   uploadCover,
@@ -13,8 +13,11 @@ const {
   addChannelCateCover,
   getChannelCateCover,
   getChannelCateCon,
-
-  getCateDetail
+  getCateDetail,
+  getChannelDetail,
+  getChannelUrl,
+  publishComment,
+  getCateConDetail
 }=require("../controller/channel.controller");
 const {authVerify}=require("../middleware/auth.middleware")
 //上传内容
@@ -25,7 +28,7 @@ channelRouter.post("/cate",authVerify,create);
 //添加分类内容
 channelRouter.post("/cate/con",authVerify,addCateCon);
 //分类内容图片
-channelRouter.post("/cate/con/cover",authVerify,channelCateCoverHandle,addChannelCateCover);
+channelRouter.post("/cate/con/cover",authVerify,channelCateCoverHandle,reSizePic,addChannelCateCover);
 //获取分类内容图片
 channelRouter.get("/cate/con/cover",getChannelCateCover);
 
@@ -33,9 +36,10 @@ channelRouter.get("/cate/con/cover",getChannelCateCover);
 //获取所有分类
 channelRouter.get("/cate/all",getAllCate);
 //上传封面
-channelRouter.post("/upload/cover",authVerify,channelCoverHandle,uploadCover);
+channelRouter.post("/upload/cover",authVerify,channelCoverHandle,reSizePic,uploadCover);
 //获取图片封面
 channelRouter.get("/cover",getChannelCover);
+
 //上传视频
 channelRouter.post("/video",authVerify,channelVideoHandle,uploadVideo);
 //获取视频
@@ -43,5 +47,13 @@ channelRouter.get("/video",getChannelVideo);
 //获取子分类
 channelRouter.get("/cate/con",getChannelCateCon)
 //获取曲分类下（体育，音乐）内容
-channelRouter.get("/cate/detail",getCateDetail)
+channelRouter.get("/cate/detail",getCateDetail);
+//获取频道内容详情
+channelRouter.get("/content/detail",getChannelDetail);
+//获取频道播放地址
+channelRouter.get("/url",getChannelUrl);
+//发表频道内容评论
+channelRouter.post("/comment",authVerify,publishComment);
+//获取子分类内容详情
+channelRouter.get("/cate/con/detail",getCateConDetail);
 module.exports=channelRouter  

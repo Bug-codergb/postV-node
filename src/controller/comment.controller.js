@@ -1,10 +1,13 @@
+const fs=require("fs");
 const {
     createService,
     replyService,
     getAllCommentService,
     getCommentByIdService,
     delCommentService,
-    getMomentComService
+    getMomentComService,
+    uploadComImgService,
+    getCommentImgService
 }=require('../service/comment.service')
 const {
     paramError
@@ -60,6 +63,25 @@ class CommentController{
         const {momentId}=ctx.query;
         const result=await getMomentComService(momentId);
         ctx.body=result[0];
+    }
+    //上传评论图片
+    async uploadComImg(ctx,next){
+        const {filename,size,mimetype,originalname,destination}=ctx.req.file;
+        const result=await uploadComImgService(filename,size,mimetype,originalname,destination);
+        const {comId,url}=result;
+        ctx.body={
+            errno:0,
+            data:[url],
+            comId
+        }
+    }
+    //获取评论图片
+    async getCommentImg(ctx,next){
+        const {id}=ctx.query;
+        const result=await getCommentImgService(id);
+        const {filename,mimetype,dest}=result[0];
+        ctx.set("content-type",mimetype);
+        ctx.body=fs.createReadStream(`${dest}/${filename}`);
     }
 }
 module.exports=new CommentController();

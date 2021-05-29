@@ -25,6 +25,9 @@ class MomentController {
     async create(ctx, next) {
         const { userId } = ctx.user;
         let {momentId,title, content, cate } = ctx.request.body;
+        if(!momentId){
+            momentId=new Date().getTime()
+        }
         const result = await createService(momentId,userId, title, content, cate);
         ctx.body = result
     }
@@ -36,21 +39,7 @@ class MomentController {
                 return ctx.app.emit('error', err, ctx);
             }
             const result = await getMomentByIdService(momentId);
-            let content = ''
-            //console.log(result[0].originalNames, result[0].content)
-            if (result[0].originalNames && result[0].content) {
-                for (let i = 0; i < result[0].originalNames.length; i++) {
-                    result[0].content = result[0].content.replace(/&nbsp;/g, '').replace(/\(/g, '').replace(/\)/g, '')
-                    //console.log(result[0].content+'\n'); 
-                    //console.log(result[0].originalNames[i]+"\n")
-                    let reg = new RegExp(`\\[${result[0].originalNames[i]}\\]`, "g");
-                    content = result[0].content.replace(reg, `<img src=${result[0].picUrl[i].picUrl} alt=${result[0].originalNames[i]} //>`)
-                    result[0].content = content
-                }
-            }
-            //console.log(result[0])
             const res = await getDetailCountService(momentId);
-            // console.log(res[0])
             Object.assign(result[0], res[0]);
             ctx.body = result[0]
         } catch (e) {

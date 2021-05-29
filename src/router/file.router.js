@@ -3,7 +3,8 @@ const fileRouter=new Router();
 const {authVerify}=require('../middleware/auth.middleware');
 const {
     avatarHandle,
-    pictureHandle
+    pictureHandle,
+    reSizePic
 }=require('../middleware/file.middleware');
 const {
     create,
@@ -16,7 +17,7 @@ const {
 fileRouter.post('/upload/avatar',authVerify,avatarHandle,create)
 fileRouter.get('/user/avatar',getAvatar)
 //为动态配图
-fileRouter.post('/upload/moment/picture',authVerify,pictureHandle,addMomentPic);
+fileRouter.post('/upload/moment/picture',authVerify,pictureHandle,reSizePic,addMomentPic);
 //获取动态图片
 fileRouter.get('/moment/picture',getMomentPic)
 //删除动态配图
