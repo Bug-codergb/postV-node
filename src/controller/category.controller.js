@@ -1,7 +1,8 @@
 const {
   createService,
   getAllCateService,
-  getCateDetailService
+  getCateDetailService,
+    addCateConService
 }=require('../service/category.service')
 class CategoryController{
   async create(ctx,next)
@@ -33,6 +34,12 @@ class CategoryController{
     {
       console.log(e);
     } 
+  }
+  //添加分类子分类
+  async addCateCon(ctx,next){
+      const {name,cateId}=ctx.request.body;
+      const result=await addCateConService(name,cateId);
+      ctx.body=result;
   }
 }
 module.exports=new CategoryController();

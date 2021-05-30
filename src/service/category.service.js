@@ -56,5 +56,12 @@ class CategoryService{
       console.log(e)
     }
   }
+  //获取分类内容子分类
+  async addCateConService(name,cateId){
+    const id=new Date().getTime();
+    const sql=`insert into moment_cate(id,name,cateId) values(?,?,?)`;
+    const result=await connection.execute(sql,[id,name,cateId]);
+    return result[0];
+  }
 }
 module.exports=new CategoryService()

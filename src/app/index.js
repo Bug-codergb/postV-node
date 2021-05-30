@@ -34,9 +34,6 @@ const topicRouter=require('../router/topic.router');
 //审核
 const checkRouter=require('../router/check.router');
 
-//放映厅
-const movieRouter=require('../router/movie.router');
-
 //课程
 const knowledgeRouter=require('../router/knowledge.router');
 //广告
@@ -47,6 +44,8 @@ const chatRouter=require("../router/chat.router");
 const captchaRouter=require("../router/imgVerify.router");
 //频道
 const channelRouter=require("../router/channel.router");
+//专栏
+const spcolumnRouter=require("../router/spcolumn.router");
 app.use(async (ctx, next) => {
     ctx.set("Access-Control-Allow-Origin", "*")
     ctx.set('Access-Control-Allow-Headers','POST,Origin,Content-Type,Accept,authorization')
@@ -95,9 +94,6 @@ app.use(topicRouter.allowedMethods());
 app.use(checkRouter.routes());
 app.use(checkRouter.allowedMethods());
 
-app.use(movieRouter.routes());
-app.use(movieRouter.allowedMethods());
-
 app.use(knowledgeRouter.routes())
 app.use(knowledgeRouter.allowedMethods());
 
@@ -112,6 +108,9 @@ app.use(captchaRouter.allowedMethods());
 
 app.use(channelRouter.routes());
 app.use(channelRouter.allowedMethods());
+
+app.use(spcolumnRouter.routes());
+app.use(spcolumnRouter.allowedMethods());
 
 webApp.ws.use(chatRouter.routes());
 
