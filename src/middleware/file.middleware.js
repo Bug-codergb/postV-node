@@ -62,7 +62,7 @@ const videoHandle=videoUpload.single('video');
 //视频图片
 const videoImgHandle=videoImgUpload.single('videoImg');
 
-const topicImgHandle=topicImgUpload.array('topicImg');
+const topicImgHandle=topicImgUpload.single('topicImg');
 
 //放映厅
 const movieHandle=movieUpload.array('movie');

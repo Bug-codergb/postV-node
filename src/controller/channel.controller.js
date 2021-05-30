@@ -15,7 +15,11 @@ const {
   getChannelDetailService,
   getChannelUrlService,
   publishCommentService,
-  getCateConDetailService
+  getCateConDetailService,
+  getChannelCommentService,
+  replyCommentService,
+  thumbChannelService,
+  cancelThumbService
 }=require("../service/channel.service.js")
 class ChannelController{
   async create(ctx,next){
@@ -148,6 +152,43 @@ class ChannelController{
       })
     }
     ctx.body=Object.assign(res,{channel:channel},{count:channel.length});
+  }
+  //获取频道内容评论
+  async getChannelComment(ctx,next){
+    const {id,offset,limit}=ctx.query;
+    if(id){
+      const result=await getChannelCommentService(id,offset,limit);
+      let comment=[];
+      const res={...result[0]};
+      delete res.comment;
+      if(result.length!==0){
+        comment=result.map((item,index)=>{
+          return item.comment
+        })
+      }
+      ctx.body=Object.assign(res,{comment:comment});
+    }
+  }
+  //回复频道内容评论
+  async replyComment(ctx,next){
+    const {commentId,content,cId}=ctx.request.body;
+    const {userId}=ctx.user;
+    const result=await replyCommentService(commentId,cId,content,userId);
+    ctx.body=result[0];
+  }
+  //点赞频道
+  async thumbChannel(ctx,next){
+    const {id}=ctx.request.body;
+    const {userId}=ctx.user;
+    const result=await thumbChannelService(id,userId);
+    ctx.body=result[0];
+  }
+  //取消点赞
+  async cancelThumb(ctx,next){
+    const {userId}=ctx.user;
+    const {cId}=ctx.request.body;
+    const result=await cancelThumbService(userId,cId);
+    ctx.body=result;
   }
 }
 module.exports=new ChannelController();

@@ -1,4 +1,7 @@
-const fs=require('fs')
+const fs=require('fs');
+const {
+    getSizePic
+}=require("../utils/getSizePic")
 const {
     createService,
     addUserAvatarService,
@@ -36,12 +39,11 @@ class FileController{
     async addMomentPic(ctx,next)
     {
         const {userId}=ctx.user;
-        const picUrl=`${APP_HOST}:${APP_PORT}/moment/picture?`;
         let result='';
         const momentId=new Date().getTime();
         const {file}=ctx.req
         const {mimetype,filename,size,originalname}=file;
-        result=await addMomentPicService(momentId,userId,mimetype,filename,size,picUrl,originalname.replace(/\s+/g,''));
+        result=await addMomentPicService(momentId,userId,mimetype,filename,size,originalname.replace(/\s+/g,''));
         ctx.body={
             errno:0,
             data:[result],
@@ -58,11 +60,9 @@ class FileController{
             return ctx.app.emit('error',err,ctx)
         }
         let {fileName,mimetype}=result[0];
-        if(type){
-            fileName=fileName+"-small";
-        }
+        const newFileName=await getSizePic(type,fileName,`./upload/picture`);
         ctx.set('content-type',mimetype)
-        ctx.body=fs.createReadStream(`./upload/picture/${fileName}`);
+        ctx.body=fs.createReadStream(`./upload/picture/${newFileName}`);
     }
     async deleteMomentPic(ctx,next)
     {  

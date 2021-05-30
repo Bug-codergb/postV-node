@@ -1,7 +1,7 @@
 const Router=require('koa-router');
 const topicRouter=new Router({prefix:'/topic'});
 const {authVerify}=require('../middleware/auth.middleware')
-const {topicImgHandle,topicCoverHandle}=require('../middleware/file.middleware');
+const {topicImgHandle,topicCoverHandle,reSizePic}=require('../middleware/file.middleware');
 const {
   create,
   getAllTopic,
@@ -27,17 +27,20 @@ topicRouter.post('/',authVerify,create);
 topicRouter.get('/all',getAllTopic);
 
 //为话题封面配图
-topicRouter.post('/img',authVerify,topicCoverHandle,setTopicImg)
+topicRouter.post('/img',authVerify,topicCoverHandle,reSizePic,setTopicImg)
 //获取话题配图
 topicRouter.get('/cover',getTopicCover)
 
 //删除话题
 topicRouter.post('/delete',authVerify,delTopic)
+
 //为话题添加内容
 topicRouter.post('/content',authVerify,addContent)
-topicRouter.post('/content/img',authVerify,topicImgHandle,addContentImg) ;
+
+topicRouter.post('/content/img',authVerify,topicImgHandle,reSizePic,addContentImg) ;
 //获取话题内容图片
-topicRouter.get('/content/img',getTopicImg);  
+topicRouter.get('/content/img',getTopicImg);
+
 //获取话题内容
 topicRouter.get('/content',getTopicContent);
 //收藏话题内容

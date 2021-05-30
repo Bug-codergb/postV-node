@@ -26,7 +26,7 @@ class TopicService{
   async setTopicImgService(userId,topicId,mimetype,filename,size)
   {
     const id=new Date().getTime();
-    const url=`${APP_HOST}:${APP_PORT}/topic/cover?id=${id}`;
+    const url=`${APP_HOST}:${APP_PORT}/topic/cover?id=${id}&type=small`;
     const sql=`insert into topic_img(id,topicId,userId,mimetype,fileName,picUrl,size) values(?,?,?,?,?,?,?)`;
     const result=await connection.execute(sql,[id,topicId,userId,mimetype,filename,url,size]);
     return result[0];
@@ -44,23 +44,19 @@ class TopicService{
     const result = await connection.execute(sql,[topicId]);
     return result;
   }
-  async addContentService(topicId,title,content,userId)
-  {
-    const id=new Date().getTime();
-    const sql=`insert into topic_content (id,topicId,content,title,userId) values(?,?,?,?,?)`;
-    const result =await connection.execute(sql,[id,topicId,content,title,userId]);
-    return {
-      status:200,
-      topic_content_id:id
-    }
+  async addContentService(topic_content_id,topicId,title,content,userId) {
+    const sql = `insert into topic_content (id,topicId,content,title,userId) values(?,?,?,?,?)`;
+    const result = await connection.execute(sql, [topic_content_id, topicId, content, title, userId]);
+    return result[0];
   }
+
   async addContentImgService(topic_content_id,userId,mimetype,filename,originalname,size)
   {
     const id=new Date().getTime();
     const picUrl=`${APP_HOST}:${APP_PORT}/topic/content/img?id=${id}`;
     const sql=`insert into topic_content_img (id,topic_content_id,userId,mimetype,fileName,picUrl,size,originalname) values(?,?,?,?,?,?,?,?)`;
     const result= await connection.execute(sql,[id,topic_content_id,userId,mimetype,filename,picUrl,size,originalname]);
-    return result[0]
+    return picUrl
   }
   //获取动态图片
   async getTopicImgService(id)

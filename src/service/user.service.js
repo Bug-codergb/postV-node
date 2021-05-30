@@ -68,7 +68,9 @@ class UserService {
          (JSON_OBJECT('moment',(select JSON_ARRAYAGG(JSON_OBJECT('momentId',thumbs.momentId)) from thumbs where user.userId=thumbs.userId
                                                           and thumbs.momentId is not null),
                      'comment',(select JSON_ARRAYAGG(JSON_OBJECT('commentId',thumbs.commentId)) from thumbs where user.userId=thumbs.userId 
-                                                                          and thumbs.commentId is not null))
+                                                          and thumbs.commentId is not null),
+                     'channel',(select JSON_ARRAYAGG(JSON_OBJECT('cId',thumbs.cId)) FROM thumbs where user.userId=thumbs.userId 
+                                                           and thumbs.cId is not null))
          ) as thumbs,
          (select JSON_OBJECT('moment',
                          (select JSON_ARRAYAGG(JSON_OBJECT('momentId',m.momentId,'title',m.title)) 

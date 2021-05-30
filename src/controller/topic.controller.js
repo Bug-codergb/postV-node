@@ -1,5 +1,11 @@
 const fs = require('fs');
 const {
+  isExistsFile
+}=require("../utils/isExists");
+const {
+  getSizePic
+}=require("../utils/getSizePic")
+const {
   createService,
   getAllTopicService,
   delTopicService,
@@ -43,11 +49,22 @@ class TopicController {
   }
   //获取话题封面
   async getTopicCover(ctx, next) {  
-    const { id } = ctx.query;
+    const { id,type } = ctx.query;
     const result = await getTopicCoverService(id);
-    const { fileName, mimetype } = result[0];
-    ctx.set('content-type', mimetype);
-    ctx.body = fs.createReadStream(`./upload/topicImg/${fileName}`)
+    let { fileName, mimetype } = result[0];
+    let newFileName=fileName;
+    try{
+      if(type){
+        fileName=fileName+"-small";
+        await isExistsFile(`./upload/topicImg/${fileName}`);
+        newFileName=fileName;
+      }
+      ctx.set('content-type', mimetype);
+      ctx.body = fs.createReadStream(`./upload/topicImg/${newFileName}`)
+    }catch(e){
+      ctx.set('content-type', mimetype);
+      ctx.body = fs.createReadStream(`./upload/topicImg/${newFileName}`)
+    }
   }
   //删除话题
   async delTopic(ctx, next) {
@@ -57,40 +74,37 @@ class TopicController {
   }
   //为话题添加内容
   async addContent(ctx, next) {
-    let { title, content } = ctx.request.body;  
+    let { topic_content_id,title, content } = ctx.request.body;
     const { topicId } = ctx.query;
     const {userId}=ctx.user
-    const reg0 = /\n/g;
-    const reg1 = /\s/g;
-    content = content.replace(reg0, '<br/>').replace(reg1, '&nbsp;');
-    const result = await addContentService(topicId, title, content,userId);
+    const result = await addContentService(topic_content_id,topicId, title, content,userId);
     ctx.body = result;
   }
   async addContentImg(ctx, next) {
-    const { topic_content_Id } = ctx.query;
-    const { files } = ctx.req;
+    const { topic_content_id } =ctx.query;
+    const { file } = ctx.req;
     const { userId } = ctx.user;
-    for (let file of files) {
-      const { mimetype, filename, size, originalname } = file;
-      const result = await addContentImgService(topic_content_Id, userId, mimetype, filename, originalname, size);
-      ctx.body = result;
-    }
+    const { mimetype, filename, size, originalname } = file;
+    const result = await addContentImgService(topic_content_id, userId, mimetype, filename, originalname, size);
+    ctx.body = {
+      errno:0,
+      data:[result],
+    };
   }
   //获取话题图片
   async getTopicImg(ctx, next) {
-    const { id } = ctx.query;
+    const { id,type } = ctx.query;
     const result = await getTopicImgService(id);
-    // console.log(result[0]);
-    const { fileName, mimetype } = result[0];
+    let { fileName, mimetype } = result[0];
+    const newFileName=await getSizePic(type,fileName,`./upload/topicContentImg`);
     ctx.set('content-type', mimetype);
-    ctx.body = fs.createReadStream(`./upload/topicContentImg/${fileName}`)
+    ctx.body=fs.createReadStream(`./upload/topicContentImg/${newFileName}`);
   }
   //获取话题内容
   async getTopicContent(ctx, next) {
     try {
       const { offset, limit, topicId } = ctx.query;
       const result = await getTopicContentService(topicId, offset, limit);
-     // console.log(result[0])
       if (result[0].content) {
         for (let item of result[0].content) {
           if (item.originalNames) {

@@ -17,7 +17,11 @@ const {
   getChannelDetail,
   getChannelUrl,
   publishComment,
-  getCateConDetail
+  getCateConDetail,
+  getChannelComment,
+  replyComment,
+  thumbChannel,
+  cancelThumb
 }=require("../controller/channel.controller");
 const {authVerify}=require("../middleware/auth.middleware")
 //上传内容
@@ -56,4 +60,12 @@ channelRouter.get("/url",getChannelUrl);
 channelRouter.post("/comment",authVerify,publishComment);
 //获取子分类内容详情
 channelRouter.get("/cate/con/detail",getCateConDetail);
+//获取频道内容评论
+channelRouter.get("/comment",getChannelComment);
+//回复评论
+channelRouter.post("/comment/reply",authVerify,replyComment);
+//点赞频道
+channelRouter.post("/thumb",authVerify,thumbChannel);
+//取消点赞频道
+channelRouter.post("/thumb/cancel",authVerify,cancelThumb);
 module.exports=channelRouter  

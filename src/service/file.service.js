@@ -1,4 +1,8 @@
 const connection =require('../app/database');
+const {
+    APP_PORT,
+    APP_HOST
+}=require('../app/config')
 class FileService{
     async createService(userId,mimetype,fileName,size)
     {
@@ -23,13 +27,13 @@ class FileService{
         return result[0]
     }
     //为动态配图
-    async addMomentPicService(momentId,userId,mimetype,fileName,size,picUrl,originalname)
+    async addMomentPicService(momentId,userId,mimetype,fileName,size,originalname)
     {
         const id=new Date().getTime();
-        
+        const picUrl=`${APP_HOST}:${APP_PORT}/moment/picture?id=${id}&type=small`;
         const sql=`insert into picture(id,momentId,userId,mimetype,fileName,originalname,size,picUrl) values(?,?,?,?,?,?,?,?)`;
-        const result=await connection.execute(sql,[id,momentId,userId,mimetype,fileName,originalname,size,`${picUrl}id=${id}`]);
-        return `${picUrl}id=${id}`
+        const result=await connection.execute(sql,[id,momentId,userId,mimetype,fileName,originalname,size,picUrl]);
+        return picUrl;
     }
     async getMomentPicService(id)
     {

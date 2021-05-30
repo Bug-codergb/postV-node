@@ -147,5 +147,43 @@ class ChannelService{
     const result=await connection.execute(sql,[id,offset,limit]);
     return result[0];
   }
+  //获取频道内容评论
+  async getChannelCommentService(id,offset,limit){
+    const sql=`select ch.cId,title,picUrl,ch.createTime,ch.updateTime,
+       JSON_OBJECT('commentId',commentId,'content',c.content,'user',
+               (select JSON_OBJECT('userId',c.userId,'userName',userName,'avatarUrl',avatarUrl) 
+                 from user where user.userId=c.userId),
+                   'createTime',c.createTime,'updateTime',c.updateTime,
+                   'reply',(SELECT JSON_ARRAYAGG(
+                   JSON_OBJECT('commentId',com.commentId,'content',com.content,'user',
+                     (select JSON_OBJECT('userId',com.userId,'userName',userName,'avatarUrl',avatarUrl) 
+                  FROM user where user.userId=com.userId))
+                 ) from comment as com where com.replyId=c.commentId)) as comment
+        from channel as ch 
+        INNER JOIN comment as c on c.cId=ch.cId
+        where ch.cId=?
+        limit ?,?`;
+    const result=await connection.execute(sql,[id,offset,limit]);
+    return result[0]
+  }
+  //回复频道内容评论
+  async replyCommentService(commentId,cId,content,userId){
+    const id=new Date().getTime();
+    const sql=`insert into comment(commentId,content,userId,replyId,cId) values(?,?,?,?,?)`;
+    const result=await connection.execute(sql,[id,content,userId,commentId,cId]);
+    return result[0];
+  }
+  //点赞频道
+  async thumbChannelService(cId,userId){
+    const sql=`insert into thumbs(userId,cId) values(?,?)`;
+    const result=await connection.execute(sql,[userId,cId]);
+    return result[0];
+  }
+  //取消点赞
+  async cancelThumbService(userId,cId){
+    const sql=`delete from thumbs where userId=? and cId=?`;
+    const result=await connection.execute(sql,[userId,cId]);
+    return result[0];
+  }
 }
 module.exports=new ChannelService();
