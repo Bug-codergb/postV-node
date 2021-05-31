@@ -39,15 +39,14 @@ class FileController{
     async addMomentPic(ctx,next)
     {
         const {userId}=ctx.user;
+        const {momentId}=ctx.query;
         let result='';
-        const momentId=new Date().getTime();
         const {file}=ctx.req
         const {mimetype,filename,size,originalname}=file;
         result=await addMomentPicService(momentId,userId,mimetype,filename,size,originalname.replace(/\s+/g,''));
         ctx.body={
             errno:0,
             data:[result],
-            momentId
         }  
     }
     async getMomentPic(ctx,next)

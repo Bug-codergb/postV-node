@@ -9,7 +9,7 @@ class CategoryService{
   }
   async getAllCateService(offset,limit)
   {
-    const sql=`select categoryId,name from category where name not in ('微课堂','放映厅') limit ?,?`;
+    const sql=`select categoryId,name from category where name not in ('微课堂') limit ?,?`;
     const result=await connection.execute(sql,[offset,limit]);
     return result[0]
   }
@@ -56,11 +56,21 @@ class CategoryService{
       console.log(e)
     }
   }
-  //获取分类内容子分类
+  //添加分类内容子分类
   async addCateConService(name,cateId){
     const id=new Date().getTime();
     const sql=`insert into moment_cate(id,name,cateId) values(?,?,?)`;
     const result=await connection.execute(sql,[id,name,cateId]);
+    return result[0];
+  }
+  //后去分类细分类
+  async getAllConCateService(cateId){
+    const sql=`select cateId,c.name,JSON_ARRAYAGG(JSON_OBJECT('id',id,'name',mc.name)) as cate
+                from moment_cate as mc
+                LEFT JOIN category as c on c.categoryId=cateId
+                GROUP BY cateId
+                having cateId=?`;
+    const result=await connection.execute(sql,[cateId]);
     return result[0];
   }
 }

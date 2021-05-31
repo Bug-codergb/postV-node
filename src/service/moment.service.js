@@ -2,11 +2,11 @@ const connection = require('../app/database');
 const { getCateNameByIdService } = require('./category.service');
 class MomentService {
     async createService(momentId,userId, title, content, cate) {
-        let type = 0;
+        let type =1;
         const res=await getCateNameByIdService(cate);
         const {name}=res[0];
-        if (name === '视频'||name==="预告片"||name==="微课堂") {
-            type = 1
+        if (name==='专栏') {
+            type = 0
         }
         const sql = `insert into moment (momentId,userId,title,content,categoryId,type) values(?,?,?,?,?,?)`;
         const result = await connection.execute(sql, [momentId, userId, title, content, cate, type]);
@@ -114,10 +114,12 @@ class MomentService {
         const result = await connection.execute(sql);
         return result[0]
     }
-    async getHotMomentService(categoryId) 
+    async getHotMomentService(categoryId)
     {
         const sql = `
         select c.categoryId,c.name,
+        (select JSON_OBJECT('id',mc.id,'name',mc.name) 
+          from video INNER JOIN moment_cate as mc  on mc.id=video.categoryId  where video.momentId=moment.momentId) as cate,
        moment.momentId,moment.content,moment.title,moment.updateTime,
 			  (select count(view.momentId) from view where view.momentId=moment.momentId) as views,
 				(select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl) from user where user.userId=moment.userId) as user,type,

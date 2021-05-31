@@ -2,7 +2,8 @@ const {
   createService,
   getAllCateService,
   getCateDetailService,
-    addCateConService
+    addCateConService,
+    getAllConCateService
 }=require('../service/category.service')
 class CategoryController{
   async create(ctx,next)
@@ -40,6 +41,12 @@ class CategoryController{
       const {name,cateId}=ctx.request.body;
       const result=await addCateConService(name,cateId);
       ctx.body=result;
+  }
+  //获取分类子分类
+  async getAllConCate(ctx,next){
+      const {cateId}=ctx.query;
+      const result=await getAllConCateService(cateId);
+      ctx.body=result[0];
   }
 }
 module.exports=new CategoryController();

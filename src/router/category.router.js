@@ -4,7 +4,8 @@ const {
   create,
   getAllCate,
   getCateDetail,
-  addCateCon
+  addCateCon,
+  getAllConCate
 }=require('../controller/category.controller');
 const {
   authVerify
@@ -14,5 +15,7 @@ cateRouter.get('/all',getAllCate)
 //获取分类下内容
 //cateRouter.get('/detail',getCateDetail);
 //添加分类子分类
-cateRouter.post("/con",authVerify,addCateCon)
+cateRouter.post("/con",authVerify,addCateCon);
+//获取分类下所有子分类
+cateRouter.get("/all/con",getAllConCate)
 module.exports=cateRouter;    

@@ -38,8 +38,7 @@ videoRouter.get('/detail',getVideoDetail)
 videoRouter.post('/add/playCount',addPlayCount)
 //添加视频分类
 videoRouter.post('/cate/add',authVerify,addVideoCate)
-//获取视频分类
-videoRouter.get('/cate/all',getVideoAllCate);
+
 //为视频添加cate
 videoRouter.post('/cate',authVerify,addCateForVio)
 //获取cate下视频

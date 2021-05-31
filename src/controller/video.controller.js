@@ -22,9 +22,9 @@ class VideoController{
     // console.log(ctx.req.files)
      const {momentId}=ctx.query;
      const {userId}=ctx.user;
-     const {duration}=ctx.req.body;
+     const {duration,cateId}=ctx.req.body;
      const {mimetype,filename,size}=ctx.req.file;
-     const result=await createService(momentId,userId,mimetype,filename,size,duration);
+     const result=await createService(momentId,userId,mimetype,filename,size,duration,cateId);
      ctx.body=result;
   }  
   async uploadVioImg(ctx,next)
@@ -100,12 +100,7 @@ class VideoController{
     const result =await addVideoCateService(name);
     ctx.body=result
   }  
-  //获取视频分类
-  async getVideoAllCate(ctx,next)
-  {
-    const result=await getVideoAllCateService();
-    ctx.body=result;
-  }
+
   //为视频添加cate
   async addCateForVio(ctx,next)
   {

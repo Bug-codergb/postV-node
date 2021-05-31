@@ -4,12 +4,12 @@ const {
   APP_HOST
 }=require('../app/config')
 class VideoService{
-  async createService(momentId,userId,mimetype,filename,size,duration)
+  async createService(momentId,userId,mimetype,filename,size,duration,cateId)
   {
     const id=new Date().getTime();
     const url=`${APP_HOST}:${APP_PORT}/video?vid=${id}`;
-    const sql=`insert into video (vid,url,momentId,userId,mimetype,fileName,size,duration) values(?,?,?,?,?,?,?,?)`;
-    const result=await connection.execute(sql,[id,url,momentId,userId,mimetype,filename,size,duration]);
+    const sql=`insert into video (vid,url,momentId,userId,mimetype,fileName,size,duration,categoryId) values(?,?,?,?,?,?,?,?,?)`;
+    const result=await connection.execute(sql,[id,url,momentId,userId,mimetype,filename,size,duration,cateId]);
     return id
   }
   async uploadVioImgService(vid,mimetype,filename,size)
@@ -86,13 +86,6 @@ class VideoService{
     const result=await connection.execute(sql,[id,name]);
     return result[0]
   }
-  //获取视频分类
-  async getVideoAllCateService()
-  {
-    const sql=`select * from video_cate`;
-    const result=await connection.execute(sql);
-    return result[0];
-  }
   //为视频添加cate
   async addCateForVioService(vid,categoryId)
   {  
@@ -104,16 +97,16 @@ class VideoService{
   async getCateVideoService(categoryId)
   {
     const sql=`
-    select video_cate.categoryId,video_cate.name, 
-       JSON_ARRAYAGG(JSON_OBJECT('vid',video.vid,'updateTime',video.updateTime,'playCount',playCount,
+    select mc.id,mc.name, 
+       JSON_ARRAYAGG(JSON_OBJECT('vid',video.vid,'updateTime',video.updateTime,'playCount',playCount,'dt',duration,
        'title',(select title from moment where moment.momentId=video.momentId),
-			 'coverUrl', (select vioimg.url from vioimg where video.vid=vioimg.vid),
-			 'user',(select JSON_OBJECT('userId',user.userId,'userName',user.userName,'avatarUrl',avatarUrl) from user where user.userId=video.userId)	
-			 )) as videos
-    from video_cate 
-    LEFT JOIN video on video_cate.categoryId=video.categoryId
-    GROUP BY video_cate.categoryId
-    HAVING video_cate.categoryId=?`;
+       'coverUrl', (select vioimg.url from vioimg where video.vid=vioimg.vid),
+       'user',(select JSON_OBJECT('userId',user.userId,'userName',user.userName,'avatarUrl',avatarUrl) from user where user.userId=video.userId),'status',status\t
+    )) as videos
+    from moment_cate as mc
+    INNER JOIN video on mc.id=video.categoryId
+    LEFT JOIN moment on moment.momentId=video.momentId
+    where mc.id=? and status=1`;
     const result=await connection.execute(sql,[categoryId]);
     return result[0]
   }
