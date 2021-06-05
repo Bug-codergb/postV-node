@@ -11,7 +11,8 @@ const {
   getVideoAllCateService,
   addCateForVioService,
   getCateVideoService,
-  getCommVideoService
+  getCommVideoService,
+    getVideoBannerService
 } = require("../service/video.service");
 const {
     isExistsFile
@@ -121,6 +122,12 @@ class VideoController{
   {
     const result=await getCommVideoService();
     ctx.body=result
+  }
+  //获取视频banner
+  async getVideoBanner(ctx,next) {
+      const {cateId,offset, limit} = ctx.query;
+      const result = await getVideoBannerService(cateId,offset, limit);
+      ctx.body = result;
   }
 }
 module.exports=new VideoController()

@@ -125,5 +125,22 @@ class VideoService{
     const result=await connection.execute(sql);
     return result[0]
   }
+  //获取视频banner
+  async getVideoBannerService(cateId,offset,limit){
+    const sql=`
+    select vid,title,content,(select JSON_OBJECT('userId',v.userId,'userName',userName,'avatarUrl',avatarUrl) 
+                          FROM user where user.userId=v.userId) AS user,
+       v.createTime,v.updateTime,type,playCount,duration,
+       count(t.userId) as thumb,(select url from vioimg where vioimg.vid=v.vid) as coverUrl
+        from video as v
+        INNER JOIN moment as m on m.momentId=v.momentId								
+        LEFT JOIN thumbs as t on t.momentId=m.momentId	
+        where m.categoryId=?							
+        GROUP BY m.momentId
+        ORDER BY thumb desc		
+        limit ?,?;  		`
+    const result=await connection.execute(sql,[cateId,offset,limit]);
+    return result[0];
+  }
 }
 module.exports=new VideoService()
