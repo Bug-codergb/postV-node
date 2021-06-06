@@ -19,16 +19,24 @@ const {
     cancelSubService,
     getDetailCountService,
     getBriefMomentService
-} = require('../service/moment.service')
+} = require('../service/moment.service');
+const {
+    getSpcolumnByIdService,
+    setMomentSpcolumnService
+}=require("../service/spcolumn.service")
 class MomentController {
     //发布动态
     async create(ctx, next) {
         const { userId } = ctx.user;
-        let {momentId,title, content, cate } = ctx.request.body;
+        let {momentId,title, content, cate ,cateConId} = ctx.request.body;
         if(!momentId){
             momentId=new Date().getTime()
         }
-        const result = await createService(momentId,userId, title, content, cate);
+        const res=await getSpcolumnByIdService(cateConId);
+        const result = await createService(momentId,userId,title,content,cate);
+        if(res.length!==0){
+            await setMomentSpcolumnService(cateConId,momentId);
+        }
         ctx.body = result
     }
     async getMomentById(ctx, next) {
@@ -60,6 +68,7 @@ class MomentController {
         const root=path.join(__dirname,'../../');
         const {type}=result[0];
         const {file}=result[0];
+        console.log(result);
         if(type===1)
         {
             const videoPath=path.resolve(root,`upload/video/${file.video}`);
@@ -82,16 +91,18 @@ class MomentController {
         }
         else if(type===0)
         {
-            file.forEach((item,index)=>{
-              const picPath=path.resolve(root,`upload/picture/${item.pic}`);
-              isExistsFile(picPath).then(data=>{
-                delFile(data).then(data=>{
-                    console.log(data);
+            if(file){
+                file.forEach((item,index)=>{
+                    const picPath=path.resolve(root,`upload/picture/${item.pic}`);
+                    isExistsFile(picPath).then(data=>{
+                        delFile(data).then(data=>{
+                            console.log(data);
+                        })
+                    }).catch(e=>{
+                        console.log(e);
+                    })
                 })
-              }).catch(e=>{
-                console.log(e);
-              })
-            })
+            }
         }
         const res= await delMomentService(momentId);
         ctx.body = res;

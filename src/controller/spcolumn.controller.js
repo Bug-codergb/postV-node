@@ -13,7 +13,7 @@ class SpcolumnController{
   //获取专栏分类
   async getSpcolumnCate(ctx,next){
     const result=await getSpcolumnCateService();
-    ctx.body=result;
+    ctx.body=result[0];
   }
   //为动态划分专栏
     async setMomentSpcolumn(ctx,next){

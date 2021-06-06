@@ -65,8 +65,20 @@ class VideoController{
    try{
     const {vid}=ctx.query;
     const result=await getVideoByIdService(vid);
-    const {mimetype,fileName,duration}=result[0];
-    ctx.set('content-type',mimetype); 
+    const {mimetype,fileName,duration,size}=result[0];
+    const range=ctx.headers.range;
+
+    const positions = range.replace(/bytes=/, "").split("-");
+    const start = parseInt(positions[0], 10);
+    const total = size;
+    const end = positions[1] ? parseInt(positions[1], 10) : total - 1;
+    const thunksize = (end - start) + 1;
+
+    ctx.status=206;
+    ctx.set('accept-ranges','bytes');
+    ctx.set('content-length',thunksize);
+    ctx.set('content-type',mimetype);
+    ctx.set('content-range',`bytes ${start}-${end}/${total}`);
     ctx.body=fs.createReadStream(`./upload/video/${fileName}`);
    }catch(e)
    {

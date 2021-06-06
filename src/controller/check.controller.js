@@ -1,7 +1,8 @@
 const { APP_HOST, APP_PORT } = require('../app/config')
 const {
   getAllCheckService,
-  checkMomentService
+  checkMomentService,
+  getAllCheckVioService
 } = require('../service/check.service')
 
 class CheckController {
@@ -15,6 +16,12 @@ class CheckController {
   {
     const {momentId}=ctx.query;
     const result=await checkMomentService(momentId);
+    ctx.body=result;
+  }
+  //获取所有check video
+  async getAllCheckVio(ctx,next){
+    const {offset,limit}=ctx.query;
+    const result=await getAllCheckVioService(offset,limit);
     ctx.body=result;
   }
 }

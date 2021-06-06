@@ -1,28 +1,19 @@
 const {
-  getToplistPicService,
-  getToplistVioService,
-  getToplistArticleService
+    getSpcolumnTopService,
+    getToplistService
 }=require('../service/toplist.service')
 class ToplistController{
-  async getToplistPic(ctx,next)
-  {
-    const {offset,limit}=ctx.query;
-    const result=await getToplistPicService(offset,limit);
-    ctx.body=result;
+  //专栏排行榜详情
+  async getSpcolumnTop(ctx,next){
+      const {cateId}=ctx.query;
+      const result=await getSpcolumnTopService(cateId);
+      ctx.body=result;
   }
-  //视频榜单
-  async getToplistVio(ctx,next)
-  {
-    const {offset,limit}=ctx.query;
-    const result=await getToplistVioService(offset,limit);
-    ctx.body=result;
-  }
-  //文章榜单
-  async getToplistArticle(ctx,next)
-  {
-    const {offset,limit}=ctx.query;
-    const result=await getToplistArticleService(offset,limit);
-    ctx.body=result;
-  }
+  //获取其他榜单
+    async getToplist(ctx,next){
+      const {cateId}=ctx.query;
+      const result=await getToplistService(cateId);
+      ctx.body=result;
+    }
 }
 module.exports=new ToplistController()

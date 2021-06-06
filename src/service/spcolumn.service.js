@@ -8,7 +8,12 @@ class SpcolumnService{
   }
   //获取专栏分类
   async getSpcolumnCateService(){
-      const sql=`select * from spcolumn`;
+      const sql=`
+      select c.categoryId,c.name,(select JSON_ARRAYAGG(JSON_OBJECT('categoryId',id,'name',s.name)) 
+                    from spcolumn as s) as cate			
+      from category as c
+      where c.categoryId=1616757439494
+      `;
       const result=await connection.execute(sql);
       return result[0];
   }
@@ -17,6 +22,12 @@ class SpcolumnService{
       const sql=`insert into spcolumn_moment(spId,momentId) values(?,?)`;
       const result=await connection.execute(sql,[spId,momentId]);
       return result;
+  }
+  //获取分类
+  async getSpcolumnByIdService(id){
+      const sql=`select id,name from spcolumn where id=?`;
+      const result=await connection.execute(sql,[id]);
+      return result[0];
   }
   //获取专栏分类下内容
   async getSpcolumnDetailService(spId,cateId,offset,limit){
