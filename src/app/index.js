@@ -46,6 +46,8 @@ const captchaRouter=require("../router/imgVerify.router");
 const channelRouter=require("../router/channel.router");
 //专栏
 const spcolumnRouter=require("../router/spcolumn.router");
+//动态(dynamic)
+const dynamicRouter=require("../router/dynamic.router");
 app.use(async (ctx, next) => {
     ctx.set("Access-Control-Allow-Origin", "*")
     ctx.set('Access-Control-Allow-Headers','POST,Origin,Content-Type,Accept,authorization')
@@ -111,6 +113,9 @@ app.use(channelRouter.allowedMethods());
 
 app.use(spcolumnRouter.routes());
 app.use(spcolumnRouter.allowedMethods());
+
+app.use(dynamicRouter.routes());
+app.use(dynamicRouter.allowedMethods());
 
 webApp.ws.use(chatRouter.routes());
 
