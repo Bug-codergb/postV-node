@@ -8,7 +8,8 @@ const {
     getUserSubService,
     getUserJoinTopicService,
     getUserMsgByIdService,
-    setUserDescService
+    setUserDescService,
+    getUserSpcolumnService
 }=require('../service/user.service')
 class UserController{
     async create(ctx,next){
@@ -74,6 +75,12 @@ class UserController{
         // const res=await getUserMsgByIdService(userId);
         // const {desc}=res[0];
         const result=await setUserDescService(userId,content);
+        ctx.body=result;
+    }
+    //获取用户其它专栏
+    async getUserSpcolumn(ctx,next){
+        const {userId}=ctx.query;
+        const result=await getUserSpcolumnService(userId);
         ctx.body=result;
     }
 }

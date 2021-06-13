@@ -129,7 +129,8 @@ class UserService {
                         (select JSON_OBJECT('topicId',topicId,'name',name) from topic where topic.topicId=tc.topicId)
                                 ,'updateTime',
                         subscribe.createTime,'title',tc.title,'picUrl',(select JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) 
-                                                                from topic_content_img as tci where tci.topic_content_id=tc.id	 ))
+                                                                from topic_content_img as tci where tci.topic_content_id=tc.id	 ),
+            'user',(select JSON_OBJECT('userId',tc.userId,'userName',user.userName,'avatarUrl',user.avatarUrl) FROM user where user.userId=tc.userId))
             ) as topic
         from subscribe
         LEFT JOIN topic_content as tc 
@@ -165,6 +166,20 @@ class UserService {
         const sql=`update user set ${description}=? where userId=?`;
         const result=await connection.execute(sql,[desc,userId]);
         return result[0]
+    }
+    //获取用户其它专栏
+    async getUserSpcolumnService(userId){
+        const sql=`
+        select m.momentId,title,m.createTime,m.updateTime,m.type,
+       JSON_ARRAYAGG(p.picUrl) AS picUrl,(select JSON_OBJECT('id',sm.spId,'name',s.name) 
+			 FROM spcolumn as s where s.id=sm.spId) as category 
+       from moment as m
+        INNER JOIN spcolumn_moment as sm on sm.momentId=m.momentId
+        LEFT JOIN picture as p on p.momentId=m.momentId
+        where m.userId=?
+        GROUP BY m.momentId`;
+        const result=await connection.execute(sql,[userId]);
+        return result[0];
     }
 }
 module.exports = new UserService();

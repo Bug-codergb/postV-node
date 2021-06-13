@@ -44,6 +44,12 @@ class TopicService{
     const result = await connection.execute(sql,[topicId]);
     return result;
   }
+  //获取封面文件信息（用于删除）
+  async getTopicCoverFileService(topicId){
+    const sql=`select mimetype,fileName,size from topic_img as ti where ti.topicId=?`;
+    const result=await connection.execute(sql,[topicId]);
+    return result[0];
+  }
   async addContentService(topic_content_id,topicId,title,content,userId) {
     const sql = `insert into topic_content (id,topicId,content,title,userId) values(?,?,?,?,?)`;
     const result = await connection.execute(sql, [topic_content_id, topicId, content, title, userId]);
@@ -53,7 +59,7 @@ class TopicService{
   async addContentImgService(topic_content_id,userId,mimetype,filename,originalname,size)
   {
     const id=new Date().getTime();
-    const picUrl=`${APP_HOST}:${APP_PORT}/topic/content/img?id=${id}`;
+    const picUrl=`${APP_HOST}:${APP_PORT}/topic/content/img?id=${id}&type=small`;
     const sql=`insert into topic_content_img (id,topic_content_id,userId,mimetype,fileName,picUrl,size,originalname) values(?,?,?,?,?,?,?,?)`;
     const result= await connection.execute(sql,[id,topic_content_id,userId,mimetype,filename,picUrl,size,originalname]);
     return picUrl

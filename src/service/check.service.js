@@ -4,13 +4,14 @@ class CheckService{
   {
     try{
       const sql=
-      `select momentId,title,content,moment.updateTime,status,type,
+      `select momentId,title,content,m.updateTime,status,type,
        JSON_OBJECT('userId',user.userId,'userName',user.userName) as user,
-       JSON_OBJECT('categoryId',c.categoryId,'name',c.name) as category 
-       from moment
-       LEFT JOIN user on moment.userId=user.userId
-       LEFT JOIN category as c on c.categoryId=moment.categoryId
-       ORDER BY moment.updateTime desc
+       JSON_OBJECT('categoryId',c.categoryId,'name',c.name) as category,
+       (select vid from video as v where v.momentId=m.momentId) as vid 
+       from moment as m
+       LEFT JOIN user on m.userId=user.userId
+       LEFT JOIN category as c on c.categoryId=m.categoryId
+       ORDER BY m.updateTime desc
        limit ?,?;
       `;
     const count=await new CheckService().getCheckMomenetCount();

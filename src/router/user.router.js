@@ -9,7 +9,8 @@ const {
     getRecUser,
     getUserSub,
     getUserJoinTopic,
-    setUserDesc
+    setUserDesc,
+    getUserSpcolumn
 }=require('../controller/user.controller');
 const {login}=require('../controller/login.controller')
 const {
@@ -33,5 +34,7 @@ userRouter.get('/sub',getUserSub);
 //获取用户已经加入的专题
 userRouter.get('/topic/join',getUserJoinTopic);
 //添加用户简介
-userRouter.post('/desc',authVerify,setUserDesc)
+userRouter.post('/desc',authVerify,setUserDesc);
+//获取用户其它专栏（专栏详情页）
+userRouter.get("/spcolumn",getUserSpcolumn)
 module.exports=userRouter;

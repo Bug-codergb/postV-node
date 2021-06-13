@@ -1,10 +1,16 @@
 const fs = require('fs');
+const path=require("path");
+const errorType=require("../constants/errorType")
 const {
   isExistsFile
 }=require("../utils/isExists");
 const {
+  delFile
+}=require("../utils/deleteFile")
+const {
   getSizePic
-}=require("../utils/getSizePic")
+}=require("../utils/getSizePic");
+const uploadPath=require("../constants/uploadPath");
 const {
   createService,
   getAllTopicService,
@@ -24,7 +30,8 @@ const {
   getTopicContentDetailService,
   joinTopicService,
   getTopicMemberService,
-  getRecTopicService
+  getRecTopicService,
+  getTopicCoverFileService
 } = require('../service/topic.service')
 class TopicController {
   async create(ctx, next) {
@@ -69,8 +76,22 @@ class TopicController {
   //删除话题
   async delTopic(ctx, next) {
     const { topicId } = ctx.query;
-    const result = await delTopicService(topicId);
-    ctx.body = result[0];
+    const cover=await getTopicCoverFileService(topicId);
+    const {mimetype,fileName,size}=cover[0];
+    const filePath=path.resolve(uploadPath.TOPIC_COVER,fileName);
+    //console.log(filePath);
+    try{
+      const topicCover=await isExistsFile(filePath);
+      await delFile(topicCover);
+      const topicCoverSmall=await isExistsFile(`${filePath}-small`);
+      await delFile(topicCoverSmall);
+    }catch(e){
+      const err=new Error(errorType.THE_FILE_DOES_NOT_EXIST_AND_MAY_HAVE_BEEN_DELETED);
+      return ctx.app.emit("error",err,ctx);
+    }finally {
+      const result = await delTopicService(topicId);
+      ctx.body = result[0];
+    }
   }
   //为话题添加内容
   async addContent(ctx, next) {
@@ -105,17 +126,6 @@ class TopicController {
     try {
       const { offset, limit, topicId } = ctx.query;
       const result = await getTopicContentService(topicId, offset, limit);
-      if (result[0].content) {
-        for (let item of result[0].content) {
-          if (item.originalNames) {
-            for (let i in item.originalNames) {
-              item.content = item.content.replace(/&bsp;/g, '').replace(/\(/g, '').replace(/\)/g, '')
-              let reg = new RegExp(`\\[${item.originalNames[i].originalName}\\]`, 'g');
-              item.content = item.content.replace(reg, `<img src=${item.picUrl[i].picUrl} />`)
-            }
-          }
-        }
-      }
       ctx.body = result[0];
     } catch (e) {
       console.log(e)
@@ -164,17 +174,6 @@ class TopicController {
     try {
       const { topic_content_id } = ctx.query;
       const result = await getTopicContentDetailService(topic_content_id);
-      if (result.originalNames && result.content) 
-      {
-        for (let i = 0; i < result.originalNames.length; i++) {
-          result.content = result.content.replace(/&nbsp;/g, '').replace(/\(/g, '').replace(/\)/g, '');
-          result.originalNames[i].originalName=result.originalNames[i].originalName.replace(/\s/g,'')
-          //console.log(result.content+'\n'); 
-          //console.log(result.originalNames[i].originalName+"\n")
-          let reg = new RegExp(`\\[${result.originalNames[i].originalName}\\]`, "g");
-          result.content= result.content.replace(reg, `<img src=${result.picUrl[i].picUrl} alt=${result.originalNames[i].originalName} //>`)
-        }
-      }  
       ctx.body = result;
     } catch (e) {
       console.log(e)

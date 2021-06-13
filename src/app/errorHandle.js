@@ -27,6 +27,9 @@ function errorHandle(error,ctx){
         case errorType.VERIFICATION_CODE_ERROR:
            status=400;
            message="验证码错误";break;
+        case errorType.THE_FILE_DOES_NOT_EXIST_AND_MAY_HAVE_BEEN_DELETED:
+            status=500;
+            message="文件不存在,可能已经删除";break;
         default:
             status=404;
             message="资源不存在";

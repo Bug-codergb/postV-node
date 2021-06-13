@@ -58,15 +58,31 @@ class SearchService {
     const result=await connection.execute(sql);
     return result[0]
   }
+  //频道搜索
+  async channelService(keyword){
+    const sql=`
+    select c.cId as id,c.title,c.picUrl,c.createTime,c.updateTime,cv.playCount,cv.duration,
+       (select JSON_OBJECT('userId',c.userId,'userName',userName,'avatarUrl',avatarUrl) 
+			   from user as u where u.userId=c.userId) as user,
+				JSON_OBJECT('id',c.cateId,'name',ccc.name) as category	
+    from channel as c
+    LEFT JOIN channel_cate_con as ccc on ccc.id=c.cateId
+    LEFT JOIN channel_video as cv on cv.cId=c.cId
+    where c.title like '%${keyword}%'`;
+    const result=await connection.execute(sql);
+    return result[0]
+  }
   async searchService(keyword) {   
     try {
-     const [momentResult,userResult,topicResult]=await Promise.all([new SearchService().momentSearch(keyword),
+     const [momentResult,userResult,topicResult,channelResult]=await Promise.all([new SearchService().momentSearch(keyword),
                                                         new SearchService().userSearch(keyword),
-                                                        new SearchService().topicSearch(keyword)]);
+                                                        new SearchService().topicSearch(keyword),
+                                                        new SearchService().channelService(keyword)]);
     return {
       user:userResult,
       moment:momentResult,
-      topic:topicResult
+      topic:topicResult,
+      channel:channelResult
     }
     } catch (e) {
       console.log(e)
