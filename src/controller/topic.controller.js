@@ -31,7 +31,8 @@ const {
   joinTopicService,
   getTopicMemberService,
   getRecTopicService,
-  getTopicCoverFileService
+  getTopicCoverFileService,
+  getTopicContentFileService
 } = require('../service/topic.service')
 class TopicController {
   async create(ctx, next) {
@@ -134,8 +135,24 @@ class TopicController {
   //删除话题下内容
   async delTopicContent(ctx, next) {
     const { id } = ctx.query;
-    const result = await delTopicContentService(id);
-    ctx.body = result;
+    const result=await getTopicContentFileService(id);
+    try{
+      for(let item of result){
+        const data=await isExistsFile(path.resolve(uploadPath.TOPIC_CONTENT_IMG,item.fileName));
+        if(data){
+          await delFile(data);
+        }
+        const smallData=await isExistsFile(path.resolve(uploadPath.TOPIC_CONTENT_IMG,`${item.fileName}-small`));
+        await delFile(smallData);
+      }
+    }catch(e){
+      console.log(e)
+      const err=new Error(errorType.THE_FILE_DOES_NOT_EXIST_AND_MAY_HAVE_BEEN_DELETED);
+      return ctx.app.emit("error",err,ctx);
+    }finally {
+      const result = await delTopicContentService(id);
+      ctx.body = result;
+    }
   }
   //评论专题下内容
   async setTopicComment(ctx, next) {

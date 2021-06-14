@@ -79,8 +79,9 @@ class TopicService{
        (select JSON_OBJECT('userId',userId,'userName',userName,'avatarUrl',avatarUrl) from user where user.userId=leader) as user,
 			 picUrl,
        (select count(userId) from topic_user as tu where tu.topicId=topic.topicId) as users,
-			 (select JSON_ARRAYAGG(JSON_OBJECT('topic_content_id',tc.id,'title',title,'content',content,'picUrl',
-			         (select JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) 
+			 (select JSON_ARRAYAGG(JSON_OBJECT('topic_content_id',tc.id,'title',title,'content',content,
+			 'createTime',tc.createTime,'updateTime',tc.updateTime,
+			 'picUrl',(select JSON_ARRAYAGG(JSON_OBJECT('picUrl',picUrl)) 
 							  from topic_content_img as tci where tci.topic_content_id=tc.id ),
 								'originalNames',(select JSON_ARRAYAGG(JSON_OBJECT('originalName',originalName)) 
 							  from topic_content_img as tci where tci.topic_content_id=tc.id ),
@@ -100,6 +101,15 @@ class TopicService{
   {
     const sql=`delete from topic_content where id=?`;
     const result=await connection.execute(sql,[id]);
+    return result[0];
+  }
+  //获取专题内容文件信息（用于删除）
+  async getTopicContentFileService(topic_content_id){
+    const sql=`
+    select topic_content_id,mimetype,fileName,size,originalName
+    from topic_content_img
+    where topic_content_id=?`;
+    const result=await connection.execute(sql,[topic_content_id]);
     return result[0];
   }
   //评论专题下内容

@@ -44,20 +44,27 @@ class CheckService{
     return result[0];
   }
   //获取所有check video
-  async getAllCheckVioService(offset,limit){
-    const sql=`
-    select vid,m.title,m.content,(select JSON_OBJECT('userId',v.userId,'name',userName,'avatarUrl',avatarUrl) 
+  async getAllCheckVioService(cateId,offset,limit){
+    try{
+      const sql=`
+    select vid,m.title,m.content,(select JSON_OBJECT('userId',v.userId,'userName',userName,'avatarUrl',avatarUrl) 
                               FROM user where user.userId=v.userId) as user,
-       v.createTime,v.updateTime,v.momentId,playCount,duration,m.categoryId,
+       v.createTime,v.updateTime,v.momentId,playCount,duration,
+			 (select JSON_OBJECT('id',m.categoryId,'name',c.name) 
+			  FROM category as c where c.categoryId=m.categoryId) as cate,
 			 JSON_OBJECT('categoryId',mc.id,'name',mc.name) AS category,
 			 (select url from vioimg as vi where vi.vid=v.vid) as picUrl
     from video as v
     LEFT JOIN moment as m on m.momentId=v.momentId
     LEFT JOIN moment_cate as mc on mc.id=v.categoryId
+    where mc.id=?
     ORDER BY v.createTime desc
     limit ?,?`;
-    const result=await connection.execute(sql,[offset,limit]);
-    return result[0];
+      const result=await connection.execute(sql,[cateId,offset,limit]);
+      return result[0];
+    }catch (e){
+      console.log(e);
+    }
   }
 }
 module.exports=new CheckService()

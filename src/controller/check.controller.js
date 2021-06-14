@@ -20,8 +20,8 @@ class CheckController {
   }
   //获取所有check video
   async getAllCheckVio(ctx,next){
-    const {offset,limit}=ctx.query;
-    const result=await getAllCheckVioService(offset,limit);
+    const {cateId,offset,limit}=ctx.query;
+    const result=await getAllCheckVioService(cateId,offset,limit);
     ctx.body=result;
   }
 }

@@ -68,49 +68,47 @@ class MomentController {
         const root=path.join(__dirname,'../../');
         const {type}=result[0];
         const {file}=result[0];
-        console.log(result);
-        if(type===1)
-        {
-            const videoPath=path.resolve(root,`upload/video/${file.video}`);
-            const vioImgPath=path.resolve(root,`upload/videoImg/${file.cover}`);
-            isExistsFile(videoPath).then(data=>{
-                delFile(data).then(data=>{
-                    console.log(data);
-                })
-            }).catch(e=>{
-                console.log(e)
-            })
-            isExistsFile(vioImgPath).then(data=>{
-                delFile(data).then(data=>{
-                    console.log(data)
-                })
-            }).catch(e=>{
-                console.log(e)
-            })
+        //console.log(result);
+        try{
+            if(type===1)
+            {
+                const videoPath=path.resolve(root,`upload/video/${file.video}`);
+                const vioImgPath=path.resolve(root,`upload/videoImg/${file.cover}`);
+                const vioImgSmallPath=path.resolve(root,`upload/videoImg/${file.cover}-small`);
+                const vio = await isExistsFile(videoPath);
+                await delFile(vio);
 
-        }
-        else if(type===0)
-        {
-            if(file){
-                file.forEach((item,index)=>{
-                    const picPath=path.resolve(root,`upload/picture/${item.pic}`);
-                    isExistsFile(picPath).then(data=>{
-                        delFile(data).then(data=>{
-                            console.log(data);
-                        })
-                    }).catch(e=>{
-                        console.log(e);
-                    })
-                })
+                const vioimg =await isExistsFile(vioImgPath);
+                await delFile(vioimg);
+
+                const vioImgSmall=await isExistsFile(vioImgSmallPath);
+                await delFile(vioImgSmall);
             }
+            else if(type===0)
+            {
+                if(file){
+                    for(let item of file) {
+                        const picPath = path.resolve(root, `upload/picture/${item.pic}`);
+                        const picSmallPath=path.resolve(root, `upload/picture/${item.pic}-small`);
+                        const data = await isExistsFile(picPath);
+                        await delFile(data);
+                        const smallData=await isExistsFile(picSmallPath);
+                        await delFile(smallData);
+                    }
+                }
+            }
+        }catch(e){
+            const err=new Error(errorType.THE_FILE_DOES_NOT_EXIST_AND_MAY_HAVE_BEEN_DELETED);
+            return ctx.app.emit('error', err, ctx);
+        }finally {
+            const res= await delMomentService(momentId);
+            ctx.body = res;
         }
-        const res= await delMomentService(momentId);
-        ctx.body = res;
     }
     //获取推荐动态
     async getRecMoment(ctx, next) {
         const result = await getRecMomentService();
-        ctx.body = result
+        ctx.body = result;
     }
     //获取热们分类动态
     async getHotMoment(ctx, next) 
