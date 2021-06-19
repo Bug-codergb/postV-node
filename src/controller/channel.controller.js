@@ -1,4 +1,16 @@
 const fs=require("fs");
+const path=require("path");
+const errorType=require("../constants/errorType");
+const {
+  CHANNEL_COVER,
+  CHANNEL_VIDEO
+}=require("../constants/uploadPath")
+const {
+  isExistsFile
+}=require("../utils/isExists");
+const {
+  delFile
+}=require("../utils/deleteFile")
 const {
   createService,
   uploadCoverService,
@@ -19,7 +31,9 @@ const {
   getChannelCommentService,
   replyCommentService,
   thumbChannelService,
-  cancelThumbService
+  cancelThumbService,
+  getChannelFileService,
+  delChannelService
 }=require("../service/channel.service.js")
 class ChannelController{
   async create(ctx,next){
@@ -189,6 +203,26 @@ class ChannelController{
     const {cId}=ctx.request.body;
     const result=await cancelThumbService(userId,cId);
     ctx.body=result;
+  }
+  //删除频道内容
+  async delChannel(ctx,next) {
+    const {id} = ctx.query;
+    const result=await getChannelFileService(id);
+    const {coverFile,videoFile}=result[0];
+    try{
+      const cover=await isExistsFile(path.resolve(__dirname,"../../",`${CHANNEL_COVER}/${coverFile}`));
+      await delFile(cover);
+      const video=await isExistsFile(path.resolve(__dirname,"../../",`${CHANNEL_VIDEO}/${videoFile}`));
+      await delFile(video);
+      const coverSmall=await isExistsFile(path.resolve(__dirname,"../../",`${CHANNEL_COVER}/${coverFile}-small`));
+      await delFile(coverSmall);
+    }catch(e){
+      const err=new Error(errorType.THE_FILE_DOES_NOT_EXIST_AND_MAY_HAVE_BEEN_DELETED);
+      return ctx.app.emit("error",err,ctx);
+    }finally{
+      const result=await delChannelService(id);
+      ctx.body=result;
+    }
   }
 }
 module.exports=new ChannelController();

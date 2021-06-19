@@ -21,9 +21,13 @@ const {
   getChannelComment,
   replyComment,
   thumbChannel,
-  cancelThumb
+  cancelThumb,
+  delChannel
 }=require("../controller/channel.controller");
-const {authVerify}=require("../middleware/auth.middleware")
+const {authVerify}=require("../middleware/auth.middleware");
+const {
+  delChanelAuth
+}=require("../middleware/channel.middleware");
 //上传内容
 channelRouter.post("/",authVerify,addChannel)
 //添加分类
@@ -68,4 +72,6 @@ channelRouter.post("/comment/reply",authVerify,replyComment);
 channelRouter.post("/thumb",authVerify,thumbChannel);
 //取消点赞频道
 channelRouter.post("/thumb/cancel",authVerify,cancelThumb);
+//删除频道
+channelRouter.post("/delete",authVerify,delChanelAuth,delChannel)
 module.exports=channelRouter  

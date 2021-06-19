@@ -6,7 +6,7 @@ const {
 async function registerVerify(ctx,next)
 {
     const {userName,password,code}=ctx.request.body;
-    console.log(userName,password)
+    //console.log(userName,password)
     if(!userName||!password||userName.trim()===''||password.trim()==='')
     {
         const err=new Error(errorType.USER_NAME_OR_PASSWORD_IS_NOT_NULL);

@@ -185,5 +185,31 @@ class ChannelService{
     const result=await connection.execute(sql,[userId,cId]);
     return result[0];
   }
+  //根据用户ID和频道ID获取频道信息
+  async getChannelByUserService(cId,userId){
+    const sql=`
+    select cId,title,userId,picUrl,createTime,updateTime
+    from channel
+    where cId=? and userId=?`;
+    const result=await connection.execute(sql,[cId,userId]);
+    return result[0];
+  }
+  //获取频道视频和封面
+  async getChannelFileService(cId){
+    const sql=`
+    select c.cId,title,userId,picUrl,createTime,updateTime,cc.fileName as coverFile, cv.fileName as videoFile
+    from channel as c
+    LEFT JOIN channel_cover as cc on cc.cId=c.cId
+    LEFT JOIN channel_video as cv on cv.cId=c.cId
+    where c.cId=?`;
+    const result=await connection.execute(sql,[cId]);
+    return result[0];
+  }
+  //删除频道
+  async delChannelService(id){
+    const sql=`delete from channel where cId=?`;
+    const result=await connection.execute(sql,[id]);
+    return result[0];
+  }
 }
 module.exports=new ChannelService();
