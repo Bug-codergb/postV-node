@@ -10,7 +10,9 @@ const {
     getUserSub,
     getUserJoinTopic,
     setUserDesc,
-    getUserSpcolumn
+    getUserSpcolumn,
+    getAllUser,
+    delUser
 }=require('../controller/user.controller');
 const {login}=require('../controller/login.controller')
 const {
@@ -36,5 +38,9 @@ userRouter.get('/topic/join',getUserJoinTopic);
 //添加用户简介
 userRouter.post('/desc',authVerify,setUserDesc);
 //获取用户其它专栏（专栏详情页）
-userRouter.get("/spcolumn",getUserSpcolumn)
+userRouter.get("/spcolumn",getUserSpcolumn);
+//获取所有用户
+userRouter.get("/all",getAllUser);
+//删除用户
+userRouter.post("/delete",authVerify,delUser);
 module.exports=userRouter;

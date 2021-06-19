@@ -94,7 +94,7 @@ class UserService {
     }
     async getRecUserService()
     {
-        const desc='`desc`'
+        const desc='`desc`';
         try{
         const sql=`select fans.userId,user.userName,user.avatarUrl,${desc},count(fans.userId) as fanCount,
         JSON_ARRAYAGG(JSON_OBJECT('fanId',fanId,'fanName',fanName,
@@ -178,6 +178,32 @@ class UserService {
         LEFT JOIN picture as p on p.momentId=m.momentId
         where m.userId=?
         GROUP BY m.momentId`;
+        const result=await connection.execute(sql,[userId]);
+        return result[0];
+    }
+    //获取所有用户
+    async getAllUserService(offset,limit){
+        const description='`desc`';
+        const sql=`
+        select userId,userName,createTime,updateTime,avatarUrl,${description},auth,vip
+        from user	
+        limit ?,?`;
+        const result=await connection.execute(sql,[offset,limit]);
+        return result[0];
+    }
+    //删除用户
+    async delUserVice(userId){
+      const sql=`delete from user where userId=?`;
+      const result=await connection.execute(sql,[userId]);
+      return result[0];
+    }
+    //获取用户头像文件信息
+    async getUserAvatarFile(userId){
+        const sql=`
+        select a.userId,userName,mimetype,fileName,u.createTime,size
+        from avatar as a
+        LEFT JOIN user as u on u.userId=a.userId	
+        where a.userId=?`;
         const result=await connection.execute(sql,[userId]);
         return result[0];
     }
