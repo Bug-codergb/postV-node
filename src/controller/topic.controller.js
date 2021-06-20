@@ -32,7 +32,8 @@ const {
   getTopicMemberService,
   getRecTopicService,
   getTopicCoverFileService,
-  getTopicContentFileService
+  getTopicContentFileService,
+  cancelSubService
 } = require('../service/topic.service')
 class TopicController {
   async create(ctx, next) {
@@ -184,6 +185,13 @@ class TopicController {
     else {
       ctx.body = "你已经收藏"
     }
+  }
+  //取消收藏
+  async cancelSub(ctx,next){
+    const {userId}=ctx.user;
+    const {topic_content_id}=ctx.query;
+    const result=await cancelSubService(topic_content_id,userId);
+    ctx.body=result;
   }
   //获取专题内容详情
   async getTopicContentDetail(ctx, next) 

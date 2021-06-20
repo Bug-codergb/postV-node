@@ -211,5 +211,26 @@ class ChannelService{
     const result=await connection.execute(sql,[id]);
     return result[0];
   }
+  //收藏频道
+  async subChannelService(id,userId){
+    const subId=new Date().getTime();
+    const sql=`
+    insert into subscribe(id,userId,cId) values(?,?,?)`;
+    const result=await connection.execute(sql,[subId,userId,id]);
+    return result[0];
+  }
+  //是否已经收藏频道
+  async isSubService(id,userId){
+    const sql=`select id,userId,cId from subscribe where cId=? and userId=?`;
+    const result=await connection.execute(sql,[id,userId]);
+    return result[0];
+  }
+  //取消收藏
+  async cancelSubService(cId,userId){
+    const sql=`
+    delete from subscribe where cId=? and userId=?`;
+    const result=await connection.execute(sql,[cId,userId]);
+    return result[0];
+  }
 }
 module.exports=new ChannelService();

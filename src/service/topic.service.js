@@ -143,6 +143,16 @@ class TopicService{
     const result=await connection.execute(sql,[id,userId,topic_content_id]);
     return result[0]
   }
+  //取消收藏
+  async cancelSubService(topic_content_id,userId){
+    try{
+      const sql=`delete from subscribe where topic_content_id=? and userId=?`;
+      const result = await connection.execute(sql, [topic_content_id, userId]);
+      return result[0];
+    }catch (e){
+      console.log(e)
+    }
+  }
   //是否已经收藏
   async isSubService(userId,topic_content_id)
   {

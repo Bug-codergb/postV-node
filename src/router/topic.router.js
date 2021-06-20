@@ -19,7 +19,8 @@ const {
   getTopicContentDetail,
   joinTopic,
   getTopicMember,
-  getRecTopic
+  getRecTopic,
+  cancelSub
 }=require('../controller/topic.controller')
 //添加话题
 topicRouter.post('/',authVerify,create);
@@ -44,7 +45,10 @@ topicRouter.get('/content/img',getTopicImg);
 //获取话题内容
 topicRouter.get('/content',getTopicContent);
 //收藏话题内容
-topicRouter.post('/content/sub',authVerify,subTopicContent)
+topicRouter.post('/content/sub',authVerify,subTopicContent);
+//取消收藏
+topicRouter.post("/content/sub/cancel",authVerify,cancelSub);
+
 //删除话题下内容
 topicRouter.post('/content/delete',authVerify,delTopicContent)
 //评论话题下内容

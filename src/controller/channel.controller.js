@@ -33,7 +33,10 @@ const {
   thumbChannelService,
   cancelThumbService,
   getChannelFileService,
-  delChannelService
+  delChannelService,
+  subChannelService,
+  isSubService,
+  cancelSubService
 }=require("../service/channel.service.js")
 class ChannelController{
   async create(ctx,next){
@@ -223,6 +226,27 @@ class ChannelController{
       const result=await delChannelService(id);
       ctx.body=result;
     }
+  }
+  //收藏频道内容
+  async subChannel(ctx,next){
+    const {id}=ctx.query;
+    const {userId}=ctx.user;
+    const isSub=await isSubService(id,userId);
+    console.log(isSub)
+    if(isSub.length===0){
+      const result=await subChannelService(id,userId);
+      ctx.body=result;
+    }else{
+      const err=new Error(errorType.YOU_HAVE_SUBSCRIBED);
+       return ctx.app.emit("error",err,ctx);
+    }
+  }
+  //取消收藏
+  async cancelSub(ctx,next){
+    const {id}=ctx.query;
+    const {userId}=ctx.user;
+    const result=await cancelSubService(id,userId);
+    ctx.body=result;
   }
 }
 module.exports=new ChannelController();

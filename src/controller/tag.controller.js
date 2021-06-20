@@ -3,7 +3,9 @@ const {
     getTagByName,
     addTagService,
     isExistTagService,
-    deleteTagService
+    deleteTagService,
+    getAllTagService,
+    delTagService
 }=require('../service/tag.service')
 class TagController{
     async create(ctx,next)
@@ -52,6 +54,17 @@ class TagController{
         const {momentId,tagId}=ctx.query;
         const result=await deleteTagService(momentId,tagId);
         ctx.body={status:200};
+    }
+    async getAllTag(ctx,next){
+        const {offset,limit}=ctx.query;
+        const result=await getAllTagService(offset,limit);
+        ctx.body=result;
+    }
+    //删除标签
+    async delTag(ctx,next){
+        const {id}=ctx.query;
+        const result=await delTagService(id);
+        ctx.body=result;
     }
 }
 module.exports=new TagController() 

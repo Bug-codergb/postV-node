@@ -9,6 +9,8 @@ const PARAMETER_CANNOT_BE_EMPTY="Parameter cannot be empty";
 
 const VERIFICATION_CODE_ERROR="Verification Code is error";
 const THE_FILE_DOES_NOT_EXIST_AND_MAY_HAVE_BEEN_DELETED="The file does not exist and may have been deleted";
+
+const YOU_HAVE_SUBSCRIBED="You have subscribed";
 module.exports={
     USER_NAME_OR_PASSWORD_IS_NOT_NULL,
     USER_ALREADY_EXISTS,
@@ -18,5 +20,6 @@ module.exports={
     RESOURCE_DOES_NOT_EXIST,
     PARAMETER_CANNOT_BE_EMPTY,
     VERIFICATION_CODE_ERROR,
-    THE_FILE_DOES_NOT_EXIST_AND_MAY_HAVE_BEEN_DELETED
+    THE_FILE_DOES_NOT_EXIST_AND_MAY_HAVE_BEEN_DELETED,
+    YOU_HAVE_SUBSCRIBED
 }

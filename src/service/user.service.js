@@ -79,7 +79,10 @@ class UserService {
                                  'topicContent',
                                  (select JSON_ARRAYAGG(JSON_OBJECT('topic_content_id',topic_content_id,'title',topic_content.title))
                                  FROM subscribe LEFT JOIN topic_content on subscribe.topic_content_id=topic_content.id 
-                                 where subscribe.userId=user.userId and topic_content_id is not null)
+                                 where subscribe.userId=user.userId and topic_content_id is not null),
+                                 'channel',(select JSON_ARRAYAGG(JSON_OBJECT('cId',s.cId,'title',c.title)) 
+                                   FROM subscribe as s INNER JOIN channel as c on c.cId=s.cId
+                                   where s.userId=user.userId)
                      )) as subscribe,
                      (select JSON_ARRAYAGG(JSON_OBJECT('topicId',topicId,'userId',userId)) from topic_user where topic_user.userId=user.userId) AS topic
          from user LEFT JOIN moment on moment.userId=user.userId 

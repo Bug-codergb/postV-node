@@ -7,10 +7,16 @@ const {
 const {
     create,
     addTag,
-    deleteTag
+    deleteTag,
+    getAllTag,
+    delTag
 }=require('../controller/tag.controller')
 tagRouter.post('/',authVerify,create);
 //为动态添加标签
 tagRouter.post('/moment',authVerify,addTag)
-tagRouter.post('/moment/delete',authVerify,updateVerify,deleteTag)
+tagRouter.post('/moment/delete',authVerify,updateVerify,deleteTag);
+//获取所有tag
+tagRouter.get("/all",getAllTag);
+//删除标签
+tagRouter.post("/delete",authVerify,delTag);
 module.exports=tagRouter

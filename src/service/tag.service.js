@@ -34,5 +34,24 @@ class TagService{
         const result=connection.execute(sql,[momentId,tagId]);
         return result[0];
     }
+    //获取所有tag
+    async getAllTagService(offset,limit){
+        const sql=`
+        select t.tagId as id,tagName as name,t.createTime,t.updateTime,
+        count(t.tagId) as count
+        from tag as t
+        left join moment_tag as mt on t.tagId=mt.tagId
+        GROUP BY t.tagId
+        limit ?,?`;
+        const result=await connection.execute(sql,[offset,limit]);
+        return result[0];
+    }
+    //删除标签
+    async delTagService(id){
+        const sql=`
+        delete from tag where tagId=?`;
+        const result=await connection.execute(sql,[id]);
+        return result[0];
+    }
 }
 module.exports=new TagService()

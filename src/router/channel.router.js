@@ -22,7 +22,9 @@ const {
   replyComment,
   thumbChannel,
   cancelThumb,
-  delChannel
+  delChannel,
+  subChannel,
+  cancelSub
 }=require("../controller/channel.controller");
 const {authVerify}=require("../middleware/auth.middleware");
 const {
@@ -73,5 +75,10 @@ channelRouter.post("/thumb",authVerify,thumbChannel);
 //取消点赞频道
 channelRouter.post("/thumb/cancel",authVerify,cancelThumb);
 //删除频道
-channelRouter.post("/delete",authVerify,delChanelAuth,delChannel)
+channelRouter.post("/delete",authVerify,delChanelAuth,delChannel);
+
+//收藏频道
+channelRouter.post("/sub",authVerify,subChannel);
+//取消收藏
+channelRouter.post("/sub/cancel",authVerify,cancelSub);
 module.exports=channelRouter  
