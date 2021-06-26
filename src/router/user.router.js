@@ -12,7 +12,8 @@ const {
     setUserDesc,
     getUserSpcolumn,
     getAllUser,
-    delUser
+    delUser,
+    goesOnline
 }=require('../controller/user.controller');
 const {login}=require('../controller/login.controller')
 const {
@@ -43,4 +44,6 @@ userRouter.get("/spcolumn",getUserSpcolumn);
 userRouter.get("/all",getAllUser);
 //删除用户
 userRouter.post("/delete",authVerify,delUser);
+//用户上线
+userRouter.post("/online",authVerify,goesOnline)
 module.exports=userRouter;

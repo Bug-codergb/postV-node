@@ -4,9 +4,6 @@ const {
   create,
   getAllChatMsg
 }=require("../controller/chat.controller");
-const {
-  authVerify
-}=require("../middleware/auth.middleware")
 chatRouter.all("/",create);
-chatRouter.get("/chat/all",getAllChatMsg),
+chatRouter.get("/chat/all",getAllChatMsg)
 module.exports=chatRouter;

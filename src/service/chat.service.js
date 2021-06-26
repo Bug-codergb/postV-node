@@ -1,11 +1,11 @@
 const connection =require("../app/database.js");
 class ChatService
 {
-  async createService(userId,userName,content,sideId,sideName)
+  async createService(userId,userName,content,sideId,sideName,isOnline)
   {
     const id=new Date().getTime();
-    const sql=`insert into chat(id,userId,userName,content,sideId,sideName) values(?,?,?,?,?,?)`;
-    const result=await connection.execute(sql,[id,userId,userName,content,sideId,sideName]);
+    const sql=`insert into chat(id,userId,userName,content,sideId,sideName,isOnline) values(?,?,?,?,?,?,?)`;
+    const result=await connection.execute(sql,[id,userId,userName,content,sideId,sideName,isOnline]);
     return result[0]
   }
   //获取所有聊天记录

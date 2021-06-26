@@ -3,7 +3,8 @@ const koaBodyparser=require('koa-bodyparser');
 const webSocket=require('koa-websocket');
 const app=new Koa();
 const webApp=webSocket(app);
-const errorHandle=require('./errorHandle')
+const errorHandle=require('./errorHandle');
+
 //用户
 const userRouter=require('../router/user.router');
 //动态
@@ -40,6 +41,8 @@ const knowledgeRouter=require('../router/knowledge.router');
 const advertRouter=require('../router/advertisement.router');
 //聊天
 const chatRouter=require("../router/chat.router");
+//系统消息
+const messageRouter=require("../router/message.router");
 //验证码
 const captchaRouter=require("../router/imgVerify.router");
 //频道
@@ -48,6 +51,7 @@ const channelRouter=require("../router/channel.router");
 const spcolumnRouter=require("../router/spcolumn.router");
 //动态(dynamic)
 const dynamicRouter=require("../router/dynamic.router");
+
 app.use(async (ctx, next) => {
     ctx.set("Access-Control-Allow-Origin", "*")
     ctx.set('Access-Control-Allow-Headers','POST,Origin,Content-Type,Accept,authorization')
@@ -105,6 +109,9 @@ app.use(advertRouter.allowedMethods());
 app.use(chatRouter.routes())
 app.use(chatRouter.allowedMethods());
 
+app.use(messageRouter.routes());
+app.use(messageRouter.allowedMethods());
+
 app.use(captchaRouter.routes());
 app.use(captchaRouter.allowedMethods());
 
@@ -118,6 +125,7 @@ app.use(dynamicRouter.routes());
 app.use(dynamicRouter.allowedMethods());
 
 webApp.ws.use(chatRouter.routes());
+webApp.ws.use(messageRouter.routes());
 
 app.on('error',errorHandle)
 module.exports={

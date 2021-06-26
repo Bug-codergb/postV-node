@@ -139,11 +139,17 @@ class UserService {
         LEFT JOIN topic_content as tc 
         on subscribe.topic_content_id=tc.id
         where subscribe.userId=? and topic_content_id is not null) as topicContent,
+        (select JSON_ARRAYAGG(
+				  JSON_OBJECT('id',s.cId,'title',c.title,'user',(select JSON_OBJECT(
+															   'userId',c.userId,'userName',u.userName,'avatarUrl',u.avatarUrl
+					                                       ) FROM user as u where u.userId=c.userId),
+					            'picUrl',c.picUrl,'createTime',c.createTime)
+				) from subscribe as s INNER JOIN channel as c on c.cId=s.cId where s.userId=?) as channel,
         (select JSON_OBJECT('userId',u.userId,'userName',u.userName,'avatarUrl',avatarUrl) from user as u where u.userId=subscribe.userId) as user
         from subscribe
         LEFT JOIN moment as m on m.momentId=subscribe.momentId
         where subscribe.userId=? and m.momentId is not null`;
-        const result=await connection.execute(sql,[userId,userId]);
+        const result=await connection.execute(sql,[userId,userId,userId]);
         return result[0]
        }catch(e)
        {
@@ -208,6 +214,12 @@ class UserService {
         LEFT JOIN user as u on u.userId=a.userId	
         where a.userId=?`;
         const result=await connection.execute(sql,[userId]);
+        return result[0];
+    }
+    //用户上线
+    async goesOnlineService(online,userId){
+        const sql=`update user set online=? where userId=?`;
+        const result=await connection.execute(sql,[online,userId]);
         return result[0];
     }
 }

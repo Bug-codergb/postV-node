@@ -27,12 +27,12 @@ const topicImgUpload=Multer({
 const topicCoverUpload=Multer({
     dest:'./upload/topicImg'
 })
-const movieUpload=Multer({
+/*const movieUpload=Multer({
     dest:'./upload/movie/'
 })
 const movieImgUpload=Multer({
     dest:"./upload/movieImg/"
-})
+})*/
 const knowImgUpload=Multer({
     dest:'./upload/know/'
 })
@@ -65,8 +65,8 @@ const videoImgHandle=videoImgUpload.single('videoImg');
 const topicImgHandle=topicImgUpload.single('topicImg');
 
 //放映厅
-const movieHandle=movieUpload.array('movie');
-const movieImgHandle=movieImgUpload.array('movieImg');
+/*const movieHandle=movieUpload.array('movie');
+const movieImgHandle=movieImgUpload.array('movieImg');*/
 
 //课程图片
 const knowHandle=knowImgUpload.single('knowImg');
@@ -105,8 +105,6 @@ module.exports={
     videoHandle,
     videoImgHandle,
     topicImgHandle,
-    movieHandle,
-    movieImgHandle,
     knowHandle,
     knowContentHandle,
     topicCoverHandle,

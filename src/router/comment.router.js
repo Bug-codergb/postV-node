@@ -20,6 +20,7 @@ commentRouter.post('/',authVerify,create);
 commentRouter.post('/reply',authVerify,reply);
 commentRouter.get('/all',getAllComment);
 commentRouter.get('/',getCommentById);
+//删除评论
 commentRouter.post('/delete',authVerify,updateVerify,delComment)
 //获取动态评论
 commentRouter.get('/moment',getMomentCom);

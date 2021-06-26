@@ -23,7 +23,8 @@ const {
     getUserSpcolumnService,
     getAllUserService,
     delUserVice,
-    getUserAvatarFile
+    getUserAvatarFile,
+    goesOnlineService
 }=require('../service/user.service')
 class UserController{
     async create(ctx,next){
@@ -126,6 +127,13 @@ class UserController{
             const result=await delUserVice(targetUserId);
             ctx.body=result[0];
         }
+    }
+    //用户上线
+    async goesOnline(ctx,next){
+        const {userId}=ctx.user;
+        const {online}=ctx.request.body;
+        const result=await goesOnlineService(online,userId);
+        ctx.body=result;
     }
 }
 module.exports=new UserController()
