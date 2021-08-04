@@ -138,7 +138,7 @@ class MomentService {
         GROUP BY momentId
         HAVING picUrl is not null
         ORDER BY views desc
-        limit 0,6`
+        limit 0,8`
         const result = await connection.execute(sql,[categoryId]);
         return result[0]
     }

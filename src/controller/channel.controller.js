@@ -94,15 +94,28 @@ class ChannelController{
     const {file}=ctx.req;
     const {cId}=ctx.query;
     const {dt}=ctx.req.body;
-    const {originalname,mimetype,destination,filename}=file;
-    const result=await uploadVideoService(cId,mimetype,dt,filename,destination,originalname);
+    const {originalname,mimetype,destination,filename,size}=file;
+    const result=await uploadVideoService(cId,mimetype,dt,filename,destination,originalname,size);
     ctx.body=result[0];
   }
   //获取视频
   async getChannelVideo(ctx,next){
     const {id}=ctx.query;
     const result=await getChannelVideoService(id);
-    const {mimetype,fileName,dest}=result[0];
+    console.log(result[0]);
+    const {mimetype,fileName,dest,size}=result[0];
+    if(size!==0){
+      const range=ctx.headers.range;
+      const positions=range.replace(/bytes=/,"").split("-");
+      const start=parseInt(positions[0],10);
+      const total=size;
+      const end=positions[1]?parseInt(positions[1],10):total-1;
+      const thunkSize=(end-start)+1;
+      ctx.status=206;
+      ctx.set("accept-ranges","bytes");
+      ctx.set('content-length',thunkSize);
+      ctx.set("content-range",`bytes ${start}-${end}/${total}`);
+    }
     ctx.set("content-type",mimetype);
     ctx.body=fs.createReadStream(`${dest}/${fileName}`);
   }

@@ -56,10 +56,10 @@ class ChannelService{
     return result[0];
   } 
   //上传channel视频
-  async uploadVideoService(cId,mimetype,dt,filename,destination,originalname){
+  async uploadVideoService(cId,mimetype,dt,filename,destination,originalname,size){
     const id=new Date().getTime();
-    const sql=`insert into channel_video(vid,cId,mimetype,duration,fileName,dest,originalName) values(?,?,?,?,?,?,?)`;
-    const result=await connection.execute(sql,[id,cId,mimetype,dt,filename,destination,originalname]);
+    const sql=`insert into channel_video(vid,cId,mimetype,duration,fileName,dest,originalName,size) values(?,?,?,?,?,?,?,?)`;
+    const result=await connection.execute(sql,[id,cId,mimetype,dt,filename,destination,originalname,size]);
     return result[0];
   }
   //获取视频
